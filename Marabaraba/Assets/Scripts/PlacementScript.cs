@@ -51,6 +51,8 @@ public class Placement : MonoBehaviour
                 // 🔥 Sync colors: Pulling the Base Color we set in the GameManager script
                 Color cowColor = (player == 1) ? GameManager.instance.p1BaseColor : GameManager.instance.p2BaseColor;
 
+                UndoRedoManager.instance.SaveState();
+
                 // 1. Update the Node's visual color and data (who owns it)
                 node.OnClicked(player, cowColor);
 

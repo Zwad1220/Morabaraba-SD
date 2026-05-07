@@ -172,6 +172,8 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public void TryCapture(Node node)
     {
+
+        UndoRedoManager.instance.SaveState();
         // Cannot capture own piece or empty node
         if (node.owner == currentPlayer || node.owner == 0) return;
 

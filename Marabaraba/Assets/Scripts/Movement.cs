@@ -130,6 +130,7 @@ public class Movement : MonoBehaviour
         Color teamColor = (player == 1) ? GameManager.instance.p1BaseColor : GameManager.instance.p2BaseColor;
 
         selectedNode.SetGlow(false);
+        UndoRedoManager.instance.SaveState();
         selectedNode.ClearNode();
 
         targetNode.OnClicked(player, teamColor);
