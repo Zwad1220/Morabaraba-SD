@@ -149,13 +149,13 @@ public class GameManager : MonoBehaviour
     /// </summary>
     void EnterCaptureMode(List<int> newMill)
     {
-        //  Prevent infinite mill exploit
-        if (IsSameMill(newMill, lastMill))
-        {
-            Debug.Log("Repeat mill - no capture allowed");
-            SwitchTurn();
-            return;
-        }
+        ////  Prevent infinite mill exploit
+        //if (IsSameMill(newMill, lastMill))
+        //{
+        //    Debug.Log("Repeat mill - no capture allowed");
+        //    SwitchTurn();
+        //    return;
+        //}
 
         // Store this mill so it can't be reused immediately
         lastMill = new List<int>(newMill);
