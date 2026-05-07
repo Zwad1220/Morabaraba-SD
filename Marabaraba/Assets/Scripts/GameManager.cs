@@ -175,49 +175,47 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public void TryCapture(Node node)
     {
-        if (gameOver) return;
+        //Invalid capture checks
+        if (node.owner == currentPlayer || node.owner == 0)
+            return;
+
+        //Cannot capture mill pieces if alternatives exist
+        if (IsPartOfMill(node) && HasPiecesOutsideMills(node.owner))
+            return;
+
+        //Save Valid captures
         UndoRedoManager.instance.SaveState();
-        // Cannot capture own piece or empty node
-        if (node.owner == currentPlayer || node.owner == 0) return;
 
-        // Protection rule: cannot capture from a mill unless no alternatives exist
-        if (IsPartOfMill(node) && HasPiecesOutsideMills(node.owner)) return;
-
-        //  Store owner BEFORE clearing node (important fix)
         int capturedOwner = node.owner;
 
         node.ClearNode();
 
-        // Update piece count correctly
-        if (capturedOwner == 1) p1PiecesLeft--;
-        else if (capturedOwner == 2) p2PiecesLeft--;
+        // Update piece counts
+        if (capturedOwner == 1)
+            p1PiecesLeft--;
+        else if (capturedOwner == 2)
+            p2PiecesLeft--;
 
         Debug.Log($"P1: {p1PiecesLeft} | P2: {p2PiecesLeft}");
 
-        // Win condition: fewer than 3 pieces = loss
+        // Win conditions
         if (p1PiecesLeft <= 2)
-        {
-            gameOver = true;
-            winScreen.SetActive(true);
-            winText.text = "Player 2 wins!";
-            winText.color = p2BaseColor;
-        }
+            Debug.Log("Player 2 Wins!");
+
         if (p2PiecesLeft <= 2)
-        {
-            gameOver = true;
-            winScreen.SetActive(true);
-            winText.text = "Player 1 wins!";
-            winText.color = p1BaseColor;
-        }
+            Debug.Log("Player 1 Wins!");
 
         isCapturing = false;
+
         captureText.gameObject.SetActive(false);
 
         SwitchTurn();
 
-        // Ensure correct phase if capture ends placement
+        // Return to movement phase if placement finished
         if (piecesPlaced >= 24)
+        {
             FindObjectOfType<PhaseState>().SwitchToMovementPhase();
+        }
     }
 
     /// <summary>
