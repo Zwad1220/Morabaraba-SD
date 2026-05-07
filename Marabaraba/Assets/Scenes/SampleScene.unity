@@ -2995,6 +2995,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9621ccb68835070438b617e661e847c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gm: {fileID: 1642402944}
 --- !u!4 &693481985
 Transform:
   m_ObjectHideFlags: 0
@@ -6599,6 +6600,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mainCamera: {fileID: 519420031}
+  gm: {fileID: 1642402944}
 --- !u!114 &1642402941
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6689,6 +6691,7 @@ MonoBehaviour:
   p2GlowColor: {r: 0, g: 1, b: 1, a: 1}
   currentPlayer: 1
   piecesPlaced: 0
+  gameOver: 0
   p1PiecesLeft: 12
   p2PiecesLeft: 12
 --- !u!114 &1642402945

@@ -41,6 +41,7 @@ public class GameManager : MonoBehaviour
     public int currentPlayer = 1;   // Tracks whose turn it is
     private bool isCapturing = false; // True when player must capture a piece
     public int piecesPlaced = 0;   // Used to detect end of placement phase
+    public bool gameOver = false;
 
     // Tracks remaining pieces (used for flying + win condition)
     public int p1PiecesLeft = 12;
@@ -174,7 +175,7 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public void TryCapture(Node node)
     {
-
+        if (gameOver) return;
         UndoRedoManager.instance.SaveState();
         // Cannot capture own piece or empty node
         if (node.owner == currentPlayer || node.owner == 0) return;
@@ -196,12 +197,14 @@ public class GameManager : MonoBehaviour
         // Win condition: fewer than 3 pieces = loss
         if (p1PiecesLeft <= 2)
         {
+            gameOver = true;
             winScreen.SetActive(true);
             winText.text = "Player 2 wins!";
             winText.color = p2BaseColor;
         }
         if (p2PiecesLeft <= 2)
         {
+            gameOver = true;
             winScreen.SetActive(true);
             winText.text = "Player 1 wins!";
             winText.color = p1BaseColor;
@@ -248,6 +251,7 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public void SwitchTurn()
     {
+        if (gameOver) return;
         currentPlayer = (currentPlayer == 1) ? 2 : 1;
         UpdateTurnUI();
     }

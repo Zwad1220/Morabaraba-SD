@@ -7,6 +7,7 @@ public class UndoRedoManager : MonoBehaviour
 
     private Stack<GameState> undoStack = new Stack<GameState>();
     private Stack<GameState> redoStack = new Stack<GameState>();
+    public GameManager gm;
 
     void Awake()
     {
@@ -81,7 +82,7 @@ public class UndoRedoManager : MonoBehaviour
     //Undo Function
     public void Undo()
     {
-        if (undoStack.Count == 0) return;
+        if (undoStack.Count == 0 || gm.gameOver) return;
 
         GameState current = CaptureState();
         redoStack.Push(current);
@@ -96,7 +97,7 @@ public class UndoRedoManager : MonoBehaviour
     //Redo Function
     public void Redo()
     {
-        if (redoStack.Count == 0) return;
+        if (redoStack.Count == 0 || gm.gameOver) return;
 
         GameState current = CaptureState();
         undoStack.Push(current);

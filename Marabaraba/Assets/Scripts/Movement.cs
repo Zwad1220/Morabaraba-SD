@@ -9,7 +9,7 @@ public class Movement : MonoBehaviour
 
     [Header("Selection State")]
     private Node selectedNode; // Stores the piece currently picked up/highlighted
-
+    public GameManager gm;
     void Awake()
     {
         // Initializing the new Unity Input System
@@ -109,6 +109,7 @@ public class Movement : MonoBehaviour
     // </summary>
     void TryMove(Node targetNode)
     {
+        if (gm.gameOver) return;
         // Use FlyingPhase instead of manual logic
         if (FlyingPhase.instance.CanMove(selectedNode, targetNode))
         {
