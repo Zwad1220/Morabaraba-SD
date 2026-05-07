@@ -175,6 +175,7 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public void TryCapture(Node node)
     {
+
         //Invalid capture checks
         if (node.owner == currentPlayer || node.owner == 0)
             return;
@@ -184,6 +185,7 @@ public class GameManager : MonoBehaviour
             return;
 
         //Save Valid captures
+        if (gameOver) return;
         UndoRedoManager.instance.SaveState();
 
         int capturedOwner = node.owner;
@@ -200,10 +202,22 @@ public class GameManager : MonoBehaviour
 
         // Win conditions
         if (p1PiecesLeft <= 2)
-            Debug.Log("Player 2 Wins!");
+        {
+            gameOver = true;
+            winScreen.SetActive(true);
+            winText.text = "Player 2 wins!";
+            winText.color = p2BaseColor;
+        }
+        Debug.Log("Player 2 Wins!");
 
         if (p2PiecesLeft <= 2)
-            Debug.Log("Player 1 Wins!");
+        {
+            gameOver = true;
+            winScreen.SetActive(true);
+            winText.text = "Player 1 wins!";
+            winText.color = p1BaseColor;
+        }
+        Debug.Log("Player 1 Wins!");
 
         isCapturing = false;
 

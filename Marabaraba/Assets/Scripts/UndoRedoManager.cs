@@ -1,111 +1,135 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 public class UndoRedoManager : MonoBehaviour
 {
     public static UndoRedoManager instance;
 
-    private Stack<GameState> undoStack = new Stack<GameState>();
-    private Stack<GameState> redoStack = new Stack<GameState>();
-    public GameManager gm;
+    private GameState previousState;
+    private GameState redoState;
 
     void Awake()
     {
         instance = this;
     }
 
-    //Saves the current state of the game
+    //Saves current game state
     public void SaveState()
     {
-        undoStack.Push(CaptureState());
+        previousState = CreateGameState();
 
-        //New move clears the history
-        redoStack.Clear();
-
-        Debug.Log("State Saved");
+        //Clear redo whenever a new move happens
+        redoState = null;
     }
 
-    GameState CaptureState()
+    //Undo only last move
+    public void Undo()
+    {
+        if (previousState == null)
+        {
+            Debug.Log("No Undo Available");
+            return;
+        }
+
+        //Saves current state for redo
+        redoState = CreateGameState();
+
+        //Restores previous state
+        RestoreGameState(previousState);
+
+        //Clear undo so it can only happen once
+        previousState = null;
+
+        Debug.Log("Undo Complete");
+    }
+
+    //Redo
+    public void Redo()
+    {
+        if (redoState == null)
+        {
+            Debug.Log("No Redo Available");
+            return;
+        }
+
+        //Saves current state back into undo
+        previousState = CreateGameState();
+
+        //Restores redo state
+        RestoreGameState(redoState);
+
+        //Clears redo after use
+        redoState = null;
+
+        Debug.Log("Redo Complete");
+    }
+
+
+    //Create game state snapshot
+
+    GameState CreateGameState()
     {
         GameState state = new GameState();
 
-        Node[] nodes = GameManager.instance.allNodes;
+        state.nodeOwners = new int[GameManager.instance.allNodes.Length];
 
-        state.nodeOwners = new int[nodes.Length];
-        state.nodeOccupied = new bool[nodes.Length];
-
-        for (int i = 0; i < nodes.Length; i++)
+        for (int i = 0; i < GameManager.instance.allNodes.Length; i++)
         {
-            state.nodeOwners[i] = nodes[i].owner;
-            state.nodeOccupied[i] = nodes[i].isOccupied;
+            state.nodeOwners[i] =
+                GameManager.instance.allNodes[i].owner;
         }
 
-        state.currentPlayer = GameManager.instance.currentPlayer;
-        state.p1PiecesLeft = GameManager.instance.p1PiecesLeft;
-        state.p2PiecesLeft = GameManager.instance.p2PiecesLeft;
-        state.piecesPlaced = GameManager.instance.piecesPlaced;
+        state.currentPlayer =
+            GameManager.instance.currentPlayer;
+
+        state.piecesPlaced =
+            GameManager.instance.piecesPlaced;
+
+        state.p1PiecesLeft =
+            GameManager.instance.p1PiecesLeft;
+
+        state.p2PiecesLeft =
+            GameManager.instance.p2PiecesLeft;
 
         return state;
     }
 
-    void LoadState(GameState state)
+
+    //Restore game state
+ 
+
+    void RestoreGameState(GameState state)
     {
-        Node[] nodes = GameManager.instance.allNodes;
-
-        for (int i = 0; i < nodes.Length; i++)
+        for (int i = 0; i < GameManager.instance.allNodes.Length; i++)
         {
-            if (state.nodeOccupied[i])
-            {
-                int owner = state.nodeOwners[i];
+            Node node = GameManager.instance.allNodes[i];
 
+            node.ClearNode();
+
+            int owner = state.nodeOwners[i];
+
+            if (owner != 0)
+            {
                 Color color =
                     (owner == 1)
                     ? GameManager.instance.p1BaseColor
                     : GameManager.instance.p2BaseColor;
 
-                nodes[i].OnClicked(owner, color);
-            }
-            else
-            {
-                nodes[i].ClearNode();
+                node.OnClicked(owner, color);
             }
         }
 
-        GameManager.instance.currentPlayer = state.currentPlayer;
-        GameManager.instance.p1PiecesLeft = state.p1PiecesLeft;
-        GameManager.instance.p2PiecesLeft = state.p2PiecesLeft;
-        GameManager.instance.piecesPlaced = state.piecesPlaced;
+        GameManager.instance.currentPlayer =
+            state.currentPlayer;
+
+        GameManager.instance.piecesPlaced =
+            state.piecesPlaced;
+
+        GameManager.instance.p1PiecesLeft =
+            state.p1PiecesLeft;
+
+        GameManager.instance.p2PiecesLeft =
+            state.p2PiecesLeft;
 
         GameManager.instance.UpdateTurnUI();
-    }
-
-    //Undo Function
-    public void Undo()
-    {
-        if (undoStack.Count == 0 || gm.gameOver) return;
-
-        GameState current = CaptureState();
-        redoStack.Push(current);
-
-        GameState previous = undoStack.Pop();
-
-        LoadState(previous);
-
-        Debug.Log("Undo");
-    }
-
-    //Redo Function
-    public void Redo()
-    {
-        if (redoStack.Count == 0 || gm.gameOver) return;
-
-        GameState current = CaptureState();
-        undoStack.Push(current);
-
-        GameState redo = redoStack.Pop();
-
-        LoadState(redo);
-
-        Debug.Log("Redo");
     }
 }
