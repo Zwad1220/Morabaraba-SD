@@ -169,6 +169,7 @@ public class GameManager : MonoBehaviour
         captureText.gameObject.SetActive(true);
         captureText.text = "Player " + currentPlayer + ": Capture a piece!";
         captureText.color = (currentPlayer == 1) ? p1BaseColor : p2BaseColor;
+        SetCaptureHighlights(true);
     }
 
     /// <summary>
