@@ -49,6 +49,7 @@ public class GameManager : MonoBehaviour
 
     // Prevents players from abusing the same mill repeatedly
     private List<int> lastMill = new List<int> { -1, -1, -1 };
+    public Color validCaptureColor = Color.magenta;// colour to change pieces to when they are valid capture targets (used in capture mode)
 
     /// <summary>
     /// All valid mill combinations (3-in-a-row)
@@ -222,7 +223,7 @@ public class GameManager : MonoBehaviour
         isCapturing = false;
 
         captureText.gameObject.SetActive(false);
-
+        SetCaptureHighlights(false);
         SwitchTurn();
 
         // Return to movement phase if placement finished
@@ -295,5 +296,39 @@ public class GameManager : MonoBehaviour
             EnterCaptureMode(mill);
         else
             SwitchTurn();
+    }
+
+    /// <summary>
+    /// Highlights pieces that are legally allowed to be captured.
+    /// </summary>
+    public void SetCaptureHighlights(bool active)
+    {
+        int opponent = (currentPlayer == 1) ? 2 : 1;
+        bool opponentHasPiecesOutside = HasPiecesOutsideMills(opponent);
+
+        foreach (Node node in allNodes)
+        {
+            if (node.owner == 0) continue;
+
+            if (active && node.owner == opponent)
+            {
+                // Logic: Is it valid to capture?
+                // (Not in a mill) OR (In a mill but NO pieces exist outside mills)
+                bool isValidTarget = !IsPartOfMill(node) || !opponentHasPiecesOutside;
+
+                if (isValidTarget)
+                {
+                    node.GetComponent<Renderer>().material.color = validCaptureColor;
+                    node.SetGlow(true, validCaptureColor);
+                }
+            }
+            else
+            {
+                // Reset to original team colors
+                Color teamColor = (node.owner == 1) ? p1BaseColor : p2BaseColor;
+                node.GetComponent<Renderer>().material.color = teamColor;
+                node.SetGlow(false);
+            }
+        }
     }
 }
