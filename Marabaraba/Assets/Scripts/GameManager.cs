@@ -26,6 +26,8 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI captureText;
     public TextMeshProUGUI turnText;
     public TextMeshProUGUI phaseText;
+    public TextMeshProUGUI winText;
+    public GameObject winScreen;
 
     [Header("Player Colors")]
     public Color p1BaseColor = Color.red;
@@ -192,8 +194,18 @@ public class GameManager : MonoBehaviour
         Debug.Log($"P1: {p1PiecesLeft} | P2: {p2PiecesLeft}");
 
         // Win condition: fewer than 3 pieces = loss
-        if (p1PiecesLeft <= 2) Debug.Log("Player 2 Wins!");
-        if (p2PiecesLeft <= 2) Debug.Log("Player 1 Wins!");
+        if (p1PiecesLeft <= 2)
+        {
+            winScreen.SetActive(true);
+            winText.text = "Player 2 wins!";
+            winText.color = p2BaseColor;
+        }
+        if (p2PiecesLeft <= 2)
+        {
+            winScreen.SetActive(true);
+            winText.text = "Player 1 wins!";
+            winText.color = p1BaseColor;
+        }
 
         isCapturing = false;
         captureText.gameObject.SetActive(false);

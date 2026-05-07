@@ -8,7 +8,7 @@ using UnityEngine;
 public class FlyingPhase : MonoBehaviour
 {
     public static FlyingPhase instance;
-
+    public GameManager gm;
     void Awake()
     {
         instance = this;
@@ -32,9 +32,14 @@ public class FlyingPhase : MonoBehaviour
         if (toNode.isOccupied) return false;
 
         // If flying → can go anywhere
-        if (IsFlyingActive()) return true;
+        if (IsFlyingActive())
+        {
+            gm.UpdatePhaseUI("Flying Phase");
+            return true;
+        }
 
         // Otherwise → must be neighbour
+        gm.UpdatePhaseUI("Movement Phase");
         return fromNode.neighbours.Contains(toNode);
     }
 }
