@@ -1599,7 +1599,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -566.6, y: 42}
-  m_SizeDelta: {x: 383, y: 50}
+  m_SizeDelta: {x: 677.44, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &395776451
 MonoBehaviour:
@@ -2995,7 +2995,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9621ccb68835070438b617e661e847c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gm: {fileID: 1642402944}
 --- !u!4 &693481985
 Transform:
   m_ObjectHideFlags: 0
@@ -6628,6 +6627,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   placementPhase: {fileID: 1642402941}
   movementPhase: {fileID: 1642402940}
+  gm: {fileID: 1642402944}
 --- !u!4 &1642402943
 Transform:
   m_ObjectHideFlags: 0
@@ -6680,7 +6680,7 @@ MonoBehaviour:
   - {fileID: 1244142953}
   - {fileID: 1535206279}
   - {fileID: 1816030922}
-  captureText: {fileID: 395776451}
+  instructionText: {fileID: 395776451}
   turnText: {fileID: 1957772430}
   phaseText: {fileID: 784083256}
   winText: {fileID: 1071868411}
@@ -6692,8 +6692,11 @@ MonoBehaviour:
   currentPlayer: 1
   piecesPlaced: 0
   gameOver: 0
+  p1FlyingPhase: 0
+  p2FlyingPhase: 0
   p1PiecesLeft: 12
   p2PiecesLeft: 12
+  validCaptureColor: {r: 1, g: 0, b: 1, a: 1}
 --- !u!114 &1642402945
 MonoBehaviour:
   m_ObjectHideFlags: 0
