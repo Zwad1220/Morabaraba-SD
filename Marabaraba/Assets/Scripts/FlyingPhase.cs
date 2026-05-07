@@ -34,12 +34,10 @@ public class FlyingPhase : MonoBehaviour
         // If flying → can go anywhere
         if (IsFlyingActive())
         {
-            gm.UpdatePhaseUI("Flying Phase");
             return true;
         }
 
         // Otherwise → must be neighbour
-        gm.UpdatePhaseUI("Movement Phase");
         return fromNode.neighbours.Contains(toNode);
     }
 }

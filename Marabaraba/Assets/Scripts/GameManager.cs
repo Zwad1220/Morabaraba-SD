@@ -23,7 +23,7 @@ public class GameManager : MonoBehaviour
     public Node[] allNodes; // All 24 nodes on the board
 
     [Header("UI References")]
-    public TextMeshProUGUI captureText;
+    public TextMeshProUGUI instructionText;
     public TextMeshProUGUI turnText;
     public TextMeshProUGUI phaseText;
     public TextMeshProUGUI winText;
@@ -42,6 +42,8 @@ public class GameManager : MonoBehaviour
     private bool isCapturing = false; // True when player must capture a piece
     public int piecesPlaced = 0;   // Used to detect end of placement phase
     public bool gameOver = false;
+    public bool p1FlyingPhase = false;
+    public bool p2FlyingPhase = false;
 
     // Tracks remaining pieces (used for flying + win condition)
     public int p1PiecesLeft = 12;
@@ -72,14 +74,13 @@ public class GameManager : MonoBehaviour
     void Awake()
     {
         instance = this;
-
         // Ensure nodes are ordered by ID (important for consistency)
         allNodes = allNodes.OrderBy(n => n.nodeID).ToArray();
     }
 
     void Start()
     {
-        captureText.gameObject.SetActive(false);
+        instructionText.text = "Place a piece on an empty slot.";
         UpdateTurnUI();
         UpdatePhaseUI("Placement Phase");
     }
@@ -91,6 +92,16 @@ public class GameManager : MonoBehaviour
     {
         turnText.text = "Player " + currentPlayer + "'s Turn";
         turnText.color = (currentPlayer == 1) ? p1BaseColor : p2BaseColor;
+        if (currentPlayer == 1 && p1FlyingPhase) 
+        {
+            UpdatePhaseUI("Flying Phase");
+            instructionText.text = "Player " + currentPlayer + ": Move a piece to any empty slot.";
+        }
+        if (currentPlayer == 2 && p2FlyingPhase)
+        {
+            UpdatePhaseUI("Flying Phase");
+            instructionText.text = "Player " + currentPlayer + ": Move a piece to any empty slot.";
+        }
     }
 
     /// <summary>
@@ -166,9 +177,8 @@ public class GameManager : MonoBehaviour
 
         isCapturing = true;
 
-        captureText.gameObject.SetActive(true);
-        captureText.text = "Player " + currentPlayer + ": Capture a piece!";
-        captureText.color = (currentPlayer == 1) ? p1BaseColor : p2BaseColor;
+        instructionText.text = "Player " + currentPlayer + ": Capture a piece!";
+        //instructionText.color = (currentPlayer == 1) ? p1BaseColor : p2BaseColor;
         SetCaptureHighlights(true);
     }
 
@@ -202,6 +212,16 @@ public class GameManager : MonoBehaviour
 
         Debug.Log($"P1: {p1PiecesLeft} | P2: {p2PiecesLeft}");
 
+        if (p1PiecesLeft == 3)
+        {
+            p1FlyingPhase = true;
+            
+        }
+        if (p2PiecesLeft == 3 && currentPlayer == 2)
+        {
+            p2FlyingPhase = true;
+        }
+
         // Win conditions
         if (p1PiecesLeft <= 2)
         {
@@ -210,7 +230,6 @@ public class GameManager : MonoBehaviour
             winText.text = "Player 2 wins!";
             winText.color = p2BaseColor;
         }
-        Debug.Log("Player 2 Wins!");
 
         if (p2PiecesLeft <= 2)
         {
@@ -219,11 +238,10 @@ public class GameManager : MonoBehaviour
             winText.text = "Player 1 wins!";
             winText.color = p1BaseColor;
         }
-        Debug.Log("Player 1 Wins!");
 
         isCapturing = false;
 
-        captureText.gameObject.SetActive(false);
+        instructionText.text = "Place a piece on an empty slot.";
         SetCaptureHighlights(false);
         SwitchTurn();
 

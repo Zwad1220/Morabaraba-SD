@@ -125,7 +125,7 @@ public class Movement : MonoBehaviour
         }
         else
         {
-            Debug.Log("Invalid Move!");
+            gm.instructionText.text = "Invalid move!";
         }
     }
 

@@ -6,6 +6,7 @@ public class PhaseState : MonoBehaviour
 {
     public Placement placementPhase; // Reference to the Phase 1 script
     public Movement movementPhase;   // Reference to the Phase 2 script
+    public GameManager gm;
 
     void Start()
     {
@@ -25,5 +26,7 @@ public class PhaseState : MonoBehaviour
 
         // Tell the GameManager to update the UI text at the top of the screen
         GameManager.instance.UpdatePhaseUI("Movement Phase");
+        if (gm.currentPlayer == 1 && !gm.p1FlyingPhase) gm.instructionText.text = "Move a piece to any adjacent empty slot.";
+        if (gm.currentPlayer == 2 && !gm.p2FlyingPhase) gm.instructionText.text = "Move a piece to any adjacent empty slot.";
     }
 }
