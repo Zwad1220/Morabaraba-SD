@@ -78,28 +78,36 @@ public class Movement : MonoBehaviour
     }
 
     // <summary>
-    // Turns on the highlight (glow) using a different color from the GameManager
+    // Changes the piece to Green and turns on the glow.
     // </summary>
     void SelectPiece(Node node)
     {
         selectedNode = node;
         int player = GameManager.instance.currentPlayer;
 
-        // Fetch the highlight color (e.g., Yellow or White) from the GameManager
-        Color highlightColor = (player == 1) ? GameManager.instance.p1GlowColor : GameManager.instance.p2GlowColor;
+        // 1. Change the actual material color to Green
+        selectedNode.GetComponent<Renderer>().material.color = Color.green;
 
-        // Turn on the "Border Glow" highlight on this node
+       // glow for extra feedback
+        Color highlightColor = (player == 1) ? GameManager.instance.p1GlowColor : GameManager.instance.p2GlowColor;
         selectedNode.SetGlow(true, highlightColor);
     }
 
     // <summary>
-    // Turns off the highlight and resets the selection reference
+    // Reverts the piece back to its original team color and turns off glow.
     // </summary>
     void DeselectPiece()
     {
         if (selectedNode != null)
         {
-            selectedNode.SetGlow(false); // Reverts to original team color
+            //  Determine original team color based on the owner of the selected node
+            Color teamColor = (selectedNode.owner == 1) ? GameManager.instance.p1BaseColor : GameManager.instance.p2BaseColor;
+
+            //  Revert the material color
+            selectedNode.GetComponent<Renderer>().material.color = teamColor;
+
+            //  Turn off the glow
+            selectedNode.SetGlow(false);
         }
         selectedNode = null;
     }
@@ -138,7 +146,7 @@ public class Movement : MonoBehaviour
 
         selectedNode = null;
 
-        // 🔥 IMPORTANT: allow future mills again
+        
         GameManager.instance.CheckMillAndSwitchTurn(targetNode);
     }
 }
