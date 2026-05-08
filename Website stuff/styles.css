@@ -1,0 +1,181 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #0a0a0a;
+  color: #e0e0e0;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* HERO SECTION */
+.hero {
+  text-align: center;
+  padding: 100px 20px 60px;
+}
+
+.hero h1 {
+  font-size: 3rem;
+  letter-spacing: 8px;
+  text-transform: uppercase;
+  color: #fff;
+  margin-bottom: 10px;
+}
+
+.hero p {
+  color: #666;
+  font-size: 1.1rem;
+}
+
+/* GRID & CARD */
+.game-grid {
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+}
+
+.game-card {
+  background: #161616;
+  border: 1px solid #2a2a2a;
+  border-radius: 24px;
+  width: 100%;
+  max-width: 400px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.game-card:hover {
+  transform: translateY(-12px);
+  border-color: #444;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+}
+
+.game-image {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+  filter: grayscale(20%);
+}
+
+.game-info {
+  padding: 30px;
+}
+
+.game-title {
+  font-size: 1.8rem;
+  margin-bottom: 15px;
+  color: #fff;
+}
+
+.game-description {
+  color: #999;
+  font-size: 1rem;
+  margin-bottom: 25px;
+  line-height: 1.5;
+}
+
+.play-btn {
+  width: 100%;
+  padding: 15px;
+  border: none;
+  border-radius: 12px;
+  background: #fff;
+  color: #000;
+  font-weight: 800;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.play-btn:hover {
+  background: #ccc;
+}
+
+/* MODAL SYSTEM */
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.98);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.modal-content {
+  width: 100%;
+  max-width: 800px;
+  height: 85vh;
+  background: #111;
+  border: 1px solid #333;
+  border-radius: 30px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+.close-btn {
+  position: absolute;
+  top: 25px;
+  right: 30px;
+  background: none;
+  border: none;
+  color: #666;
+  font-size: 2rem;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.close-btn:hover {
+  color: #fff;
+}
+
+.modal-header {
+  padding: 50px 50px 20px;
+}
+
+.modal-header h2 {
+  font-size: 2.5rem;
+  color: #fff;
+}
+
+.modal-body {
+  padding: 0 50px 40px;
+  overflow-y: auto;
+  color: #bbb;
+  font-size: 1.1rem;
+  line-height: 1.8;
+  white-space: pre-line;
+}
+
+.modal-footer {
+  padding: 30px 50px;
+  background: #161616;
+  border-top: 1px solid #222;
+}
+
+.start-btn {
+  width: 100%;
+  padding: 20px;
+  border: none;
+  border-radius: 15px;
+  background: #fff;
+  color: #000;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
