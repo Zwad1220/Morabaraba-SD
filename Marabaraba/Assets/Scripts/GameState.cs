@@ -11,6 +11,9 @@ public class GameState
     public int p1PiecesLeft;
     public int p2PiecesLeft;
 
+    public int p1PiecesToPlace;
+    public int p2PiecesToPlace;
+
     public int piecesPlaced;
 
     public bool isCapturing;

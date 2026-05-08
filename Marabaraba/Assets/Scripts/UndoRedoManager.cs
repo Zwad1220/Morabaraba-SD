@@ -90,7 +90,14 @@ public class UndoRedoManager : MonoBehaviour
         state.p2PiecesLeft =
             GameManager.instance.p2PiecesLeft;
 
+        state.p1PiecesToPlace =
+    GameManager.instance.p1PiecesToPlace;
+
+        state.p2PiecesToPlace =
+            GameManager.instance.p2PiecesToPlace;
+
         return state;
+
     }
 
 
@@ -130,6 +137,13 @@ public class UndoRedoManager : MonoBehaviour
         GameManager.instance.p2PiecesLeft =
             state.p2PiecesLeft;
 
+        GameManager.instance.p1PiecesToPlace =
+    state.p1PiecesToPlace;
+
+        GameManager.instance.p2PiecesToPlace =
+            state.p2PiecesToPlace;
+
         GameManager.instance.UpdateTurnUI();
+        GameManager.instance.UpdatePieceUI();
     }
 }

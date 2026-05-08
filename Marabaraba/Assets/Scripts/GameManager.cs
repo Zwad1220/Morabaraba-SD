@@ -29,6 +29,17 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI winText;
     public GameObject winScreen;
 
+    [Header("Piece Counter UI")]
+    public TextMeshProUGUI p1PiecesText;
+    public TextMeshProUGUI p2PiecesText;
+
+    [Header("Placement Counters")]
+    public int p1PiecesToPlace = 12;
+    public int p2PiecesToPlace = 12;
+    // Tracks remaining pieces (used for flying + win condition)
+    public int p1PiecesLeft = 0;
+    public int p2PiecesLeft = 0;
+
     [Header("Player Colors")]
     public Color p1BaseColor = Color.red;
     public Color p2BaseColor = Color.blue;
@@ -44,10 +55,6 @@ public class GameManager : MonoBehaviour
     public bool gameOver = false;
     public bool p1FlyingPhase = false;
     public bool p2FlyingPhase = false;
-
-    // Tracks remaining pieces (used for flying + win condition)
-    public int p1PiecesLeft = 12;
-    public int p2PiecesLeft = 12;
 
     // Prevents players from abusing the same mill repeatedly
     private List<int> lastMill = new List<int> { -1, -1, -1 };
@@ -83,6 +90,7 @@ public class GameManager : MonoBehaviour
         instructionText.text = "Place a piece on an empty slot.";
         UpdateTurnUI();
         UpdatePhaseUI("Placement Phase");
+        UpdatePieceUI();
     }
 
     /// <summary>
@@ -104,6 +112,32 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void UpdatePieceUI()
+    {
+        //During placement phase
+        if (piecesPlaced < 24)
+        {
+            p1PiecesText.text =
+                "Player 1 Pieces To Place: " + p1PiecesToPlace;
+
+            p2PiecesText.text =
+                "Player 2 Pieces To Place: " + p2PiecesToPlace;
+        }
+
+        //During movement phase
+        else
+        {
+            p1PiecesText.text =
+                "Player 1 Pieces Left: " + p1PiecesLeft;
+
+            p2PiecesText.text =
+                "Player 2 Pieces Left: " + p2PiecesLeft;
+        }
+
+        p1PiecesText.color = p1BaseColor;
+        p2PiecesText.color = p2BaseColor;
+    }
+
     /// <summary>
     /// Updates phase display (Placement / Movement)
     /// </summary>
@@ -118,6 +152,19 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public void OnPiecePlaced(Node node)
     {
+        if (currentPlayer == 1)
+        {
+            p1PiecesToPlace--;
+            p1PiecesLeft++;
+        }
+        else
+        {
+            p2PiecesToPlace--;
+            p2PiecesLeft++;
+        }
+
+        UpdatePieceUI();
+
         piecesPlaced++;
 
         // Check if placement formed a mill
@@ -209,6 +256,7 @@ public class GameManager : MonoBehaviour
             p1PiecesLeft--;
         else if (capturedOwner == 2)
             p2PiecesLeft--;
+        UpdatePieceUI();
 
         Debug.Log($"P1: {p1PiecesLeft} | P2: {p2PiecesLeft}");
 
@@ -223,22 +271,24 @@ public class GameManager : MonoBehaviour
         }
 
         // Win conditions
-        if (p1PiecesLeft <= 2)
+        if (piecesPlaced >= 24)
         {
-            gameOver = true;
-            winScreen.SetActive(true);
-            winText.text = "Player 2 wins!";
-            winText.color = p2BaseColor;
-        }
+            if (p1PiecesLeft <= 2)
+            {
+                gameOver = true;
+                winScreen.SetActive(true);
+                winText.text = "Player 2 wins!";
+                winText.color = p2BaseColor;
+            }
 
-        if (p2PiecesLeft <= 2)
-        {
-            gameOver = true;
-            winScreen.SetActive(true);
-            winText.text = "Player 1 wins!";
-            winText.color = p1BaseColor;
+            if (p2PiecesLeft <= 2)
+            {
+                gameOver = true;
+                winScreen.SetActive(true);
+                winText.text = "Player 1 wins!";
+                winText.color = p1BaseColor;
+            }
         }
-
         isCapturing = false;
 
         instructionText.text = "Place a piece on an empty slot.";
