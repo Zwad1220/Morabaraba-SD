@@ -25,9 +25,18 @@ public class PhaseState : MonoBehaviour
         movementPhase.enabled = true;   // Allow clicking and dragging
 
         // Tell the GameManager to update the UI text at the top of the screen
-        GameManager.instance.UpdatePhaseUI("Movement Phase");
+        
         GameManager.instance.UpdatePieceUI();
-        if (gm.currentPlayer == 1 && !gm.p1FlyingPhase) gm.instructionText.text = "Move a piece to any adjacent empty slot.";
-        if (gm.currentPlayer == 2 && !gm.p2FlyingPhase) gm.instructionText.text = "Move a piece to any adjacent empty slot.";
+        //gm.instructionText.text = "Move a piece to any adjacent empty slot.";
+        if (gm.currentPlayer == 1 && !gm.p1FlyingPhase)
+        {
+            gm.instructionText.text = "Move a piece to any adjacent empty slot.";
+            GameManager.instance.UpdatePhaseUI("Movement Phase");
+        }
+        if (gm.currentPlayer == 2 && !gm.p2FlyingPhase)
+        {
+            gm.instructionText.text = "Move a piece to any adjacent empty slot.";
+            GameManager.instance.UpdatePhaseUI("Movement Phase");
+        }
     }
 }

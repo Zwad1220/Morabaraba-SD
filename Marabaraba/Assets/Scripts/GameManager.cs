@@ -100,7 +100,7 @@ public class GameManager : MonoBehaviour
     {
         turnText.text = "Player " + currentPlayer + "'s Turn";
         turnText.color = (currentPlayer == 1) ? p1BaseColor : p2BaseColor;
-        if (currentPlayer == 1 && p1FlyingPhase) 
+        if (currentPlayer == 1 && p1FlyingPhase)
         {
             UpdatePhaseUI("Flying Phase");
             instructionText.text = "Player " + currentPlayer + ": Move a piece to any empty slot.";
@@ -260,19 +260,19 @@ public class GameManager : MonoBehaviour
 
         Debug.Log($"P1: {p1PiecesLeft} | P2: {p2PiecesLeft}");
 
-        if (p1PiecesLeft == 3)
-        {
-            p1FlyingPhase = true;
-            
-        }
-        if (p2PiecesLeft == 3 && currentPlayer == 2)
-        {
-            p2FlyingPhase = true;
-        }
+        
 
         // Win conditions
         if (piecesPlaced >= 24)
         {
+            if (p1PiecesLeft == 3)
+            {
+                p1FlyingPhase = true;
+            }
+            if (p2PiecesLeft == 3)
+            {
+                p2FlyingPhase = true;
+            }
             if (p1PiecesLeft <= 2)
             {
                 gameOver = true;
@@ -336,6 +336,10 @@ public class GameManager : MonoBehaviour
         if (gameOver) return;
         currentPlayer = (currentPlayer == 1) ? 2 : 1;
         UpdateTurnUI();
+        if (piecesPlaced >= 24)
+        {
+            FindObjectOfType<PhaseState>().SwitchToMovementPhase();
+        }
     }
 
     public bool IsCapturing() => isCapturing;
