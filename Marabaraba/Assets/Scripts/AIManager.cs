@@ -44,7 +44,7 @@ public class AIManager : MonoBehaviour
         }
         else
         {
-            ExecuteMovement();
+            yield return StartCoroutine(ExecuteMovementCoroutine());
         }
 
         // 3. WAIT for the game state to update (important for mill detection)
@@ -87,34 +87,42 @@ public class AIManager : MonoBehaviour
         }
     }
 
-    void ExecuteMovement()
+    IEnumerator ExecuteMovementCoroutine()
     {
         var validMoves = GetAvailableMoves();
-        if (validMoves.Count == 0) return;
+        if (validMoves.Count == 0) yield break;
 
         Move choice;
-
         if (currentDifficulty == Difficulty.Easy)
         {
             choice = validMoves[Random.Range(0, validMoves.Count)];
         }
         else
         {
-            // Priority 1: Moves that close a mill
             var millMoves = validMoves.Where(m => WouldFormMill(m.to, aiPlayerNumber, m.from)).ToList();
-            if (millMoves.Count > 0)
-                choice = millMoves[Random.Range(0, millMoves.Count)];
-            else
-                choice = validMoves[Random.Range(0, validMoves.Count)];
+            choice = (millMoves.Count > 0) ? millMoves[Random.Range(0, millMoves.Count)] : validMoves[Random.Range(0, validMoves.Count)];
         }
+        // --- VISUAL HIGHLIGHT LOGIC ---
 
-        // Execute Move
+        // 1. Manually set the Material Color to Green (to match human movement)
+        choice.from.GetComponent<Renderer>().material.color = Color.green;
+
+        // 2. Turn on the Glow using the AI's specific glow color from GameManager
+        Color aiGlow = (aiPlayerNumber == 1) ? GameManager.instance.p1GlowColor : GameManager.instance.p2GlowColor;
+        choice.from.SetGlow(true, aiGlow);
+
+        // 3. Wait for 1 second so the player sees the "Selection"
+        yield return new WaitForSeconds(1.0f);
+
+        // --- EXECUTE MOVE ---
         UndoRedoManager.instance.SaveState();
-        choice.from.ClearNode();
-        Color aiColor = (aiPlayerNumber == 1) ? GameManager.instance.p1BaseColor : GameManager.instance.p2BaseColor;
-        choice.to.OnClicked(aiPlayerNumber, aiColor);
 
-        // Trigger GameManager logic to check for mills
+        // Clear the old node (this also resets its color/glow internally)
+        choice.from.ClearNode();
+
+        Color aiBaseColor = (aiPlayerNumber == 1) ? GameManager.instance.p1BaseColor : GameManager.instance.p2BaseColor;
+        choice.to.OnClicked(aiPlayerNumber, aiBaseColor);
+
         GameManager.instance.CheckMillAndSwitchTurn(choice.to);
     }
 
