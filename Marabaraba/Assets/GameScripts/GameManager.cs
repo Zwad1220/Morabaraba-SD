@@ -419,33 +419,26 @@ public class GameManager : MonoBehaviour
         {
             if (node.owner == 0) continue;
 
+            Renderer r = node.GetComponent<Renderer>();
+            if (r == null) continue;
+
+            // Use sharedMaterial ONLY if we are in a test/editor environment
+            Material mat = Application.isPlaying ? r.material : r.sharedMaterial;
+
             if (active && node.owner == opponent)
             {
-                // Logic: Is it valid to capture?
-                // (Not in a mill) OR (In a mill but NO pieces exist outside mills)
                 bool isValidTarget = !IsPartOfMill(node) || !opponentHasPiecesOutside;
 
                 if (isValidTarget)
                 {
-                    Renderer r = node.GetComponent<Renderer>();
-
-                    if (r != null)
-                    {
-                        r.material.color = validCaptureColor;
-                    }
+                    mat.color = validCaptureColor;
                     node.SetGlow(true, validCaptureColor);
                 }
             }
             else
             {
-                // Reset to original team colors
                 Color teamColor = (node.owner == 1) ? p1BaseColor : p2BaseColor;
-                Renderer r = node.GetComponent<Renderer>();
-
-                if (r != null)
-                {
-                    r.material.color = teamColor;
-                }
+                mat.color = teamColor;
                 node.SetGlow(false);
             }
         }

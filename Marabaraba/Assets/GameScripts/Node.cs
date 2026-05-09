@@ -32,6 +32,17 @@ public class Node : MonoBehaviour
         }
     }
 
+    private Material GetMaterial()
+    {
+        // If the game is actually playing, use .material so each node is unique
+        if (Application.isPlaying)
+        {
+            return rend.material;
+        }
+        // In the Editor/Tests, use sharedMaterial to avoid the "Leak" error
+        return rend.sharedMaterial;
+    }
+
     /// <summary>
     /// Called when a piece is placed or moved onto this node
     /// </summary>
@@ -40,18 +51,14 @@ public class Node : MonoBehaviour
         isOccupied = true;
         owner = player;
 
-        // Only do visuals if renderer exists
         if (rend != null)
         {
-            rend.material.color = playerColor;
+            GetMaterial().color = playerColor;
         }
 
         SetGlow(false);
     }
 
-    /// <summary>
-    /// Clears the node
-    /// </summary>
     public void ClearNode()
     {
         isOccupied = false;
@@ -59,7 +66,7 @@ public class Node : MonoBehaviour
 
         if (rend != null)
         {
-            rend.material.color = Color.white;
+            GetMaterial().color = Color.white;
         }
 
         SetGlow(false);
