@@ -14,27 +14,28 @@ public class GameManagerTests
         gameObj = new GameObject();
         gm = gameObj.AddComponent<GameManager>();
 
-        // Add dependencies
+        // Add logic dependencies
         var undo = gameObj.AddComponent<UndoRedoManager>();
         var ai = gameObj.AddComponent<AIManager>();
 
-        // CRITICAL: Manual Instance Assignment
+        // Assign static instances
         GameManager.instance = gm;
         UndoRedoManager.instance = undo;
         AIManager.instance = ai;
 
-        // FIX: Mock UI References to prevent NullReferenceException
-        // We create an empty GameObject and attach a Text component so the script has something to "update"
-        gm.winScreen = new GameObject();
-        gm.winScreen.SetActive(false);
+        // MOCK UI: Prevent the NullReferenceException
+        gm.instructionText = new GameObject().AddComponent<TMPro.TextMeshProUGUI>();
+        gm.turnText = new GameObject().AddComponent<TMPro.TextMeshProUGUI>();
+        gm.phaseText = new GameObject().AddComponent<TMPro.TextMeshProUGUI>();
+        gm.p1PiecesText = new GameObject().AddComponent<TMPro.TextMeshProUGUI>();
+        gm.p2PiecesText = new GameObject().AddComponent<TMPro.TextMeshProUGUI>();
 
-        // If you use TextMeshPro, add a dummy component
-        gm.winText = gm.winScreen.AddComponent<TMPro.TextMeshProUGUI>();
+        // MOCK PHASESTATE: GameManager calls FindObjectOfType<PhaseState>()
+        var ps = gameObj.AddComponent<PhaseState>();
+        ps.gm = gm;
+        ps.placementPhase = gameObj.AddComponent<Placement>();
+        ps.movementPhase = gameObj.AddComponent<Movement>();
 
-        // Mock turn/piece UI if your script references them directly
-        // gm.turnText = new GameObject().AddComponent<TMPro.TextMeshProUGUI>();
-
-        // Initialize Nodes
         gm.allNodes = new Node[24];
         for (int i = 0; i < 24; i++)
         {
@@ -42,13 +43,13 @@ public class GameManagerTests
             gm.allNodes[i] = nObj.AddComponent<Node>();
             gm.allNodes[i].nodeID = i;
 
-            // FIX: Ensure Node has a Renderer or SpriteRenderer if ClearNode() changes colors
-            nObj.AddComponent<SpriteRenderer>();
+            // Give each node a material so sharedMaterial doesn't fail
+            var renderer = nObj.AddComponent<SpriteRenderer>();
+            renderer.sharedMaterial = new Material(Shader.Find("Sprites/Default"));
         }
 
         gm.p1PiecesToPlace = 12;
         gm.p2PiecesToPlace = 12;
-        gm.currentPlayer = 1;
     }
 
     [TearDown]
