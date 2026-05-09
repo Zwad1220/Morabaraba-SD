@@ -3,7 +3,7 @@ using UnityEngine;
 using System.Collections.Generic;
 
 [TestFixture]
-public class CaptureLogicTests
+public class CaptureTests
 {
     private GameManager gm;
     private GameObject gameObj;
@@ -11,46 +11,61 @@ public class CaptureLogicTests
     [SetUp]
     public void Setup()
     {
-        gameObj = new GameObject();
+        // 1. Initialize the core GameObjects and Script Instances
+        gameObj = new GameObject("TestController");
         gm = gameObj.AddComponent<GameManager>();
 
-        // Add dependencies
+        // Add logic dependencies
         var undo = gameObj.AddComponent<UndoRedoManager>();
         var ai = gameObj.AddComponent<AIManager>();
 
-        // CRITICAL: Manual Instance Assignment
+        // Assign static instances so the scripts can find each other
         GameManager.instance = gm;
         UndoRedoManager.instance = undo;
         AIManager.instance = ai;
 
-        // FIX: Mock UI References to prevent NullReferenceException
-        // We create an empty GameObject and attach a Text component so the script has something to "update"
-        gm.winScreen = new GameObject();
-        gm.winScreen.SetActive(false);
+        // 2. Mock ALL UI Text References to prevent NullReferenceExceptions
+        // Each of these is referenced in GameManager's UI update methods
+        gm.instructionText = new GameObject("InstructionText").AddComponent<TMPro.TextMeshProUGUI>();
+        gm.phaseText = new GameObject("PhaseText").AddComponent<TMPro.TextMeshProUGUI>();
+        gm.turnText = new GameObject("TurnText").AddComponent<TMPro.TextMeshProUGUI>();
+        gm.p1PiecesText = new GameObject("P1PiecesText").AddComponent<TMPro.TextMeshProUGUI>();
+        gm.p2PiecesText = new GameObject("P2PiecesText").AddComponent<TMPro.TextMeshProUGUI>();
 
-        // If you use TextMeshPro, add a dummy component
+        // Win Screen UI
+        gm.winScreen = new GameObject("WinScreen");
+        gm.winScreen.SetActive(false);
         gm.winText = gm.winScreen.AddComponent<TMPro.TextMeshProUGUI>();
 
-        // Mock turn/piece UI if your script references them directly
-        // gm.turnText = new GameObject().AddComponent<TMPro.TextMeshProUGUI>();
+        // 3. Mock the PhaseState dependency
+        // GameManager calls FindObjectOfType<PhaseState>(), so we must add it to the scene
+        var phaseState = gameObj.AddComponent<PhaseState>();
+        phaseState.gm = gm;
 
-        // Initialize Nodes
+        // PhaseState itself needs its internal script references
+        phaseState.placementPhase = gameObj.AddComponent<Placement>();
+        phaseState.movementPhase = gameObj.AddComponent<Movement>();
+
+        // 4. Initialize the Board (Nodes)
         gm.allNodes = new Node[24];
         for (int i = 0; i < 24; i++)
         {
-            GameObject nObj = new GameObject();
-            gm.allNodes[i] = nObj.AddComponent<Node>();
-            gm.allNodes[i].nodeID = i;
+            GameObject nObj = new GameObject("Node_" + i);
+            Node node = nObj.AddComponent<Node>();
+            node.nodeID = i;
 
-            // FIX: Ensure Node has a Renderer or SpriteRenderer if ClearNode() changes colors
+            // Node.ClearNode() requires a Renderer to avoid errors
             nObj.AddComponent<SpriteRenderer>();
+
+            gm.allNodes[i] = node;
         }
 
+        // 5. Set Initial Game State for testing
         gm.p1PiecesToPlace = 12;
         gm.p2PiecesToPlace = 12;
         gm.currentPlayer = 1;
+        gm.gameOver = false;
     }
-
     [TearDown]
     public void Teardown() => Object.DestroyImmediate(gameObj);
 

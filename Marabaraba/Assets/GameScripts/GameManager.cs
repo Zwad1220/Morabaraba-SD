@@ -92,7 +92,11 @@ public class GameManager : MonoBehaviour
         {
             node.ClearNode();
         }
-        instructionText.text = "Place a piece on an empty slot.";
+
+        if (instructionText != null)
+        {
+            instructionText.text = "Place a piece on an empty slot.";
+        }
         UpdateTurnUI();
         UpdatePhaseUI("Placement Phase");
         UpdatePieceUI();
@@ -316,7 +320,10 @@ public class GameManager : MonoBehaviour
         }
         isCapturing = false;
 
-        instructionText.text = "Place a piece on an empty slot.";
+        if (instructionText != null)
+        {
+            instructionText.text = "Place a piece on an empty slot.";
+        }
         SetCaptureHighlights(false);
         SwitchTurn();
 
