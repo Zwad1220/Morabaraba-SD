@@ -38,7 +38,7 @@ public class AIManager : MonoBehaviour
         {
             ExecuteCapture();
         }
-        else if (GameManager.instance.piecesPlaced < 18) // Standard Morris is 18 total (9 each)
+        else if (GameManager.instance.piecesPlaced < 24) 
         {
             ExecutePlacement();
         }
