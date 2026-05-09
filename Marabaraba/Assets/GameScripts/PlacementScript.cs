@@ -50,7 +50,7 @@ public class Placement : MonoBehaviour
                 // We fetch the current player and their specific color from the GameManager
                 int player = GameManager.instance.currentPlayer;
 
-                // 🔥 Sync colors: Pulling the Base Color we set in the GameManager script
+                //  Sync colors: Pulling the Base Color we set in the GameManager script
                 Color cowColor = (player == 1) ? GameManager.instance.p1BaseColor : GameManager.instance.p2BaseColor;
 
                 UndoRedoManager.instance.SaveState();
