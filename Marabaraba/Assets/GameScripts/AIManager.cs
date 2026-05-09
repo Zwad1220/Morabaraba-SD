@@ -77,7 +77,7 @@ public class AIManager : MonoBehaviour
 
         if (target != null)
         {
-            UndoRedoManager.instance.SaveState();
+            //UndoRedoManager.instance.SaveState();
             Color aiColor = (aiPlayerNumber == 1) ? GameManager.instance.p1BaseColor : GameManager.instance.p2BaseColor;// Determine the AI's color based on its player number
 
             // Execute logic
@@ -119,7 +119,7 @@ public class AIManager : MonoBehaviour
         yield return new WaitForSeconds(1.0f);
 
         //EXECUTE MOVE 
-        UndoRedoManager.instance.SaveState();
+        //UndoRedoManager.instance.SaveState();
 
         // Clear the old node
         choice.from.ClearNode();
