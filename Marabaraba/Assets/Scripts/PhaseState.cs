@@ -12,7 +12,7 @@ public class PhaseState : MonoBehaviour
     {
         // When the game starts, players are putting pieces down, not moving them.
         // So, we turn Placement ON and Movement OFF.
-        placementPhase.enabled = true;
+    
         movementPhase.enabled = false;
     }
 

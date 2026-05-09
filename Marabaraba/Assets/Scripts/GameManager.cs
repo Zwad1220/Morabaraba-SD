@@ -336,6 +336,10 @@ public class GameManager : MonoBehaviour
         if (gameOver) return;
         currentPlayer = (currentPlayer == 1) ? 2 : 1;
         UpdateTurnUI();
+        if (AIManager.instance.isAIActive && currentPlayer == AIManager.instance.aiPlayerNumber)
+        {
+            AIManager.instance.TriggerAITurn();
+        }
         if (piecesPlaced >= 24)
         {
             FindObjectOfType<PhaseState>().SwitchToMovementPhase();

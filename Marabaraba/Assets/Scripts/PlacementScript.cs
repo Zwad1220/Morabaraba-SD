@@ -22,6 +22,8 @@ public class Placement : MonoBehaviour
 
     void OnClick()
     {
+        if (AIManager.instance.isAIActive && GameManager.instance.currentPlayer == AIManager.instance.aiPlayerNumber)
+            return;
         // 1. Get the mouse position and convert it to a point in the game world
         Vector2 mousePos = Mouse.current.position.ReadValue();
         Vector2 worldPos = mainCamera.ScreenToWorldPoint(mousePos);

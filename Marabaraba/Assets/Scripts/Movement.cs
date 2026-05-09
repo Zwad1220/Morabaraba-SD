@@ -26,6 +26,8 @@ public class Movement : MonoBehaviour
     // </summary>
     void OnClick()
     {
+        if (AIManager.instance.isAIActive && GameManager.instance.currentPlayer == AIManager.instance.aiPlayerNumber)
+            return;
         // 1. Raycast to see what was clicked
         Vector2 worldPos = mainCamera.ScreenToWorldPoint(Mouse.current.position.ReadValue());
         RaycastHit2D hit = Physics2D.Raycast(worldPos, Vector2.zero);
