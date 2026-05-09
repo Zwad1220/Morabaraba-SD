@@ -87,6 +87,11 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
+        // Reset all nodes to their "Empty" state (White) at the start
+        foreach (Node node in allNodes)
+        {
+            node.ClearNode();
+        }
         instructionText.text = "Place a piece on an empty slot.";
         UpdateTurnUI();
         UpdatePhaseUI("Placement Phase");
