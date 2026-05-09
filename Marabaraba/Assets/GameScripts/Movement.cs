@@ -88,9 +88,14 @@ public class Movement : MonoBehaviour
         int player = GameManager.instance.currentPlayer;
 
         // 1. Change the actual material color to Green
-        selectedNode.GetComponent<Renderer>().material.color = Color.green;
+        Renderer r = selectedNode.GetComponent<Renderer>();
 
-       // glow for extra feedback
+        if (r != null)
+        {
+            r.material.color = Color.green;
+        }
+
+        // glow for extra feedback
         Color highlightColor = (player == 1) ? GameManager.instance.p1GlowColor : GameManager.instance.p2GlowColor;
         selectedNode.SetGlow(true, highlightColor);
     }
@@ -106,7 +111,12 @@ public class Movement : MonoBehaviour
             Color teamColor = (selectedNode.owner == 1) ? GameManager.instance.p1BaseColor : GameManager.instance.p2BaseColor;
 
             //  Revert the material color
-            selectedNode.GetComponent<Renderer>().material.color = teamColor;
+            Renderer r = selectedNode.GetComponent<Renderer>();
+
+            if (r != null)
+            {
+                r.material.color = teamColor;
+            }
 
             //  Turn off the glow
             selectedNode.SetGlow(false);

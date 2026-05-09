@@ -105,7 +105,12 @@ public class AIManager : MonoBehaviour
         // --- VISUAL HIGHLIGHT LOGIC ---
 
         // 1. Manually set the Material Color to Green (to match human movement)
-        choice.from.GetComponent<Renderer>().material.color = Color.green;
+        Renderer r = choice.from.GetComponent<Renderer>();
+
+        if (r != null)
+        {
+            r.material.color = Color.green;
+        }
 
         // 2. Turn on the Glow using the AI's specific glow color from GameManager
         Color aiGlow = (aiPlayerNumber == 1) ? GameManager.instance.p1GlowColor : GameManager.instance.p2GlowColor;

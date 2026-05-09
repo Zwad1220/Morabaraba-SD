@@ -98,23 +98,43 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public void UpdateTurnUI()
     {
-        turnText.text = "Player " + currentPlayer + "'s Turn";
-        turnText.color = (currentPlayer == 1) ? p1BaseColor : p2BaseColor;
+        if (turnText != null)
+        {
+            turnText.text = "Current Player: " + currentPlayer;
+            turnText.color = (currentPlayer == 1) ? p1BaseColor : p2BaseColor;
+        }
+
         if (currentPlayer == 1 && p1FlyingPhase)
         {
             UpdatePhaseUI("Flying Phase");
-            instructionText.text = "Player " + currentPlayer + ": Move a piece to any empty slot.";
+
+            if (instructionText != null)
+            {
+                instructionText.text =
+                    "Player " + currentPlayer +
+                    ": Move a piece to any empty slot.";
+            }
         }
+
         if (currentPlayer == 2 && p2FlyingPhase)
         {
             UpdatePhaseUI("Flying Phase");
-            instructionText.text = "Player " + currentPlayer + ": Move a piece to any empty slot.";
+
+            if (instructionText != null)
+            {
+                instructionText.text =
+                    "Player " + currentPlayer +
+                    ": Move a piece to any empty slot.";
+            }
         }
     }
 
     public void UpdatePieceUI()
     {
-        //During placement phase
+        if (p1PiecesText == null || p2PiecesText == null)
+            return;
+
+        // Placement phase
         if (piecesPlaced < 24)
         {
             p1PiecesText.text =
@@ -123,8 +143,6 @@ public class GameManager : MonoBehaviour
             p2PiecesText.text =
                 "Player 2 Pieces To Place: " + p2PiecesToPlace;
         }
-
-        //During movement phase
         else
         {
             p1PiecesText.text =
@@ -143,6 +161,8 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public void UpdatePhaseUI(string phase)
     {
+        if (phaseText == null) return;
+
         phaseText.text = "Current Phase: " + phase;
         phaseText.color = Color.white;
     }
@@ -395,7 +415,12 @@ public class GameManager : MonoBehaviour
 
                 if (isValidTarget)
                 {
-                    node.GetComponent<Renderer>().material.color = validCaptureColor;
+                    Renderer r = node.GetComponent<Renderer>();
+
+                    if (r != null)
+                    {
+                        r.material.color = validCaptureColor;
+                    }
                     node.SetGlow(true, validCaptureColor);
                 }
             }
@@ -403,7 +428,12 @@ public class GameManager : MonoBehaviour
             {
                 // Reset to original team colors
                 Color teamColor = (node.owner == 1) ? p1BaseColor : p2BaseColor;
-                node.GetComponent<Renderer>().material.color = teamColor;
+                Renderer r = node.GetComponent<Renderer>();
+
+                if (r != null)
+                {
+                    r.material.color = teamColor;
+                }
                 node.SetGlow(false);
             }
         }
