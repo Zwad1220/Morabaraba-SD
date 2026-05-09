@@ -213,13 +213,12 @@ public class GameManager : MonoBehaviour
         isCapturing = true;
 
         instructionText.text = "Player " + currentPlayer + ": Capture a piece!";
-        //instructionText.color = (currentPlayer == 1) ? p1BaseColor : p2BaseColor;
+      
         SetCaptureHighlights(true);
     }
 
-    /// <summary>
-    /// Handles removing an opponent's piece
-    /// </summary>
+   
+    // Handles removing an opponent's piece
     public void TryCapture(Node node)
     {
 
@@ -246,18 +245,16 @@ public class GameManager : MonoBehaviour
             p2PiecesLeft--;
         UpdatePieceUI();
 
-        Debug.Log($"P1: {p1PiecesLeft} | P2: {p2PiecesLeft}");
-
         
 
         // Win conditions
         if (piecesPlaced >= 24)
         {
-            if (p1PiecesLeft == 3)
+            if (p1PiecesLeft == 3)// Trigger flying phase when a player is down to 3 pieces
             {
                 p1FlyingPhase = true;
             }
-            if (p2PiecesLeft == 3)
+            if (p2PiecesLeft == 3)// Trigger flying phase when a player is down to 3 pieces
             {
                 p2FlyingPhase = true;
             }
@@ -266,7 +263,7 @@ public class GameManager : MonoBehaviour
                 gameOver = true;
                 winScreen.SetActive(true);
                 winText.text = "Player 2 wins!";
-                winText.color = p2BaseColor;
+                winText.color = p2BaseColor;// Set win text color to the winning player's base color
             }
 
             if (p2PiecesLeft <= 2)
@@ -274,10 +271,10 @@ public class GameManager : MonoBehaviour
                 gameOver = true;
                 winScreen.SetActive(true);
                 winText.text = "Player 1 wins!";
-                winText.color = p1BaseColor;
+                winText.color = p1BaseColor;// Set win text color to the winning player's base color
             }
         }
-        isCapturing = false;
+        isCapturing = false;// Exit capture mode after a successful capture
 
         if (instructionText != null)
         {
@@ -289,13 +286,12 @@ public class GameManager : MonoBehaviour
         // Return to movement phase if placement finished
         if (piecesPlaced >= 24)
         {
-            FindObjectOfType<PhaseState>().SwitchToMovementPhase();
+            FindObjectOfType<PhaseState>().SwitchToMovementPhase();// Ensure we switch to movement phase after capturing if we were still in placement phase
         }
     }
 
-    /// <summary>
-    /// Checks if a node is part of a mill
-    /// </summary>
+    
+    // Checks if a node is part of a mill
     bool IsPartOfMill(Node node)
     {
         foreach (int[] line in millLines)
@@ -311,17 +307,15 @@ public class GameManager : MonoBehaviour
         return false;
     }
 
-    /// <summary>
-    /// Checks if player has any pieces NOT in mills
-    /// </summary>
+
+    // Checks if player has any pieces NOT in mills
     bool HasPiecesOutsideMills(int player)
     {
         return allNodes.Any(n => n.owner == player && !IsPartOfMill(n));
     }
 
-    /// <summary>
-    /// Switches turns between players
-    /// </summary>
+  
+    // Switches turns between players
     public void SwitchTurn()
     {
         if (gameOver) return;
@@ -339,36 +333,29 @@ public class GameManager : MonoBehaviour
 
     public bool IsCapturing() => isCapturing;
 
-    /// <summary>
-    /// Flying rule: player can move anywhere when they have ≤ 3 pieces
-    /// Only active in movement phase
-    /// </summary>
+
+    //allows players to move anywhere when they have ≤ 3 pieces
+   
     public bool IsFlying(int player)
     {
         if (piecesPlaced < 24) return false;
 
-        int pieces = (player == 1) ? p1PiecesLeft : p2PiecesLeft;
+        int pieces = (player == 1) ? p1PiecesLeft : p2PiecesLeft;// Get the number of pieces left for the specified player
         return pieces <= 3;
     }
 
-    /// <summary>
-    /// Main decision after move/placement:
-    /// - If mill → capture mode
-    /// - Else → switch turn
-    /// </summary>
-    public void CheckMillAndSwitchTurn(Node node)
+    public void CheckMillAndSwitchTurn(Node node)// Checks if the recently placed piece formed a mill, and either enters capture mode or switches turn
     {
         List<int> mill = GetMillFormed(node);
 
         if (mill != null)
-            EnterCaptureMode(mill);
+            EnterCaptureMode(mill);// If a mill was formed, enter capture mode instead of switching turn
         else
             SwitchTurn();
     }
 
-    /// <summary>
-    /// Highlights pieces that are legally allowed to be captured.
-    /// </summary>
+
+    // Highlights pieces that are legally allowed to be captured.
     public void SetCaptureHighlights(bool active)
     {
         int opponent = (currentPlayer == 1) ? 2 : 1;
@@ -376,9 +363,9 @@ public class GameManager : MonoBehaviour
 
         foreach (Node node in allNodes)
         {
-            if (node.owner == 0) continue;
+            if (node.owner == 0) continue;// Skip empty nodes
 
-            Renderer r = node.GetComponent<Renderer>();
+            Renderer r = node.GetComponent<Renderer>();// Get the Renderer to change material color
             if (r == null) continue;
 
             // Use sharedMaterial ONLY if we are in a test/editor environment
@@ -386,19 +373,19 @@ public class GameManager : MonoBehaviour
 
             if (active && node.owner == opponent)
             {
-                bool isValidTarget = !IsPartOfMill(node) || !opponentHasPiecesOutside;
+                bool isValidTarget = !IsPartOfMill(node) || !opponentHasPiecesOutside;// Valid capture if not in a mill, or if all opponent pieces are in mills
 
                 if (isValidTarget)
                 {
                     mat.color = validCaptureColor;
-                    node.SetGlow(true, validCaptureColor);
+                    node.SetGlow(true, validCaptureColor);// Highlight valid capture targets with glow and color change
                 }
             }
             else
             {
-                Color teamColor = (node.owner == 1) ? p1BaseColor : p2BaseColor;
-                mat.color = teamColor;
-                node.SetGlow(false);
+                Color teamColor = (node.owner == 1) ? p1BaseColor : p2BaseColor;// Revert to original team color and turn off glow when not in capture mode
+                mat.color = teamColor;// Revert to original team color
+                node.SetGlow(false);// Turn off glow
             }
         }
     }

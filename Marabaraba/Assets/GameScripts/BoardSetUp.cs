@@ -6,7 +6,7 @@ public class BoardSetup : MonoBehaviour
 
     void Start()
     {
-        // We use the millLines to determine which nodes are physically connected (uses index number of nodes)
+        // use the millLines to determine which nodes are physically connected (uses index number of nodes)
         foreach (int[] line in GameManager.millLines)
         {
             // In a 3 node mill [A, B, C], A connects to B, and B connects to C
@@ -14,7 +14,6 @@ public class BoardSetup : MonoBehaviour
             Connect(line[1], line[2]);
         }
 
-        Debug.Log("Board Graph setup complete. All neighbours mapped.");// CHECK THEY WERE MAPPED CORRECTLY
     }
 
     // Creates a two way connection between two nodes

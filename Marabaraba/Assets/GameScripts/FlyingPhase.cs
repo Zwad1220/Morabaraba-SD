@@ -1,43 +1,36 @@
 using UnityEngine;
 
-/// <summary>
-/// Handles the "Flying" rule in Morabaraba:
-/// When a player has 3 or fewer pieces, they can move to ANY node,
-/// ignoring neighbour connections.
-/// </summary>
 public class FlyingPhase : MonoBehaviour
 {
-    public static FlyingPhase instance;
-    public GameManager gm;
+    public static FlyingPhase instance;// Singleton instance for easy access across scripts
+    public GameManager gm;// Reference to the GameManager for accessing game state
     void Awake()
     {
-        instance = this;
+        instance = this;// Set the singleton instance to this script
     }
 
-    /// <summary>
-    /// Checks if the CURRENT player is in flying mode
-    /// </summary>
+    
+    // Checks if the CURRENT player is in flying mode
     public bool IsFlyingActive()
     {
         int player = GameManager.instance.currentPlayer;
-        return GameManager.instance.IsFlying(player);
+        return GameManager.instance.IsFlying(player);// Delegates to GameManager's IsFlying method which checks pieces left
     }
 
-    /// <summary>
-    /// Determines if a move is valid under flying rules
-    /// </summary>
+  
+    // Determines if a move is valid under flying rules
     public bool CanMove(Node fromNode, Node toNode)
     {
         // Cannot move to occupied node
         if (toNode.isOccupied) return false;
 
-        // If flying → can go anywhere
+        // If flying- player can go anywhere
         if (IsFlyingActive())
         {
             return true;
         }
 
-        // Otherwise → must be neighbour
+        // Otherwise- player must move to a neighbouring node
         return fromNode.neighbours.Contains(toNode);
     }
 }

@@ -14,29 +14,28 @@ public class AIManager : MonoBehaviour
 
     void Awake() => instance = this;
 
-    /// <summary>
-    /// Called by GameManager when it's the AI's turn.
-    /// </summary>
+    
+    // Called by GameManager when it's the AI's turn.
     public void TriggerAITurn()
     {
-        if (!isAIActive || GameManager.instance.currentPlayer != aiPlayerNumber || GameManager.instance.gameOver)
+        if (!isAIActive || GameManager.instance.currentPlayer != aiPlayerNumber || GameManager.instance.gameOver)// Ensure it's the AI's turn and the game isn't over
             return;
 
         StopAllCoroutines();
-        StartCoroutine(AILogicCoroutine());
+        StartCoroutine(AILogicCoroutine());// Start the AI logic as a Coroutine to allow for timed delays
     }
 
     IEnumerator AILogicCoroutine()
     {
-        // 1. Initial delay for natural feel
+        // Initial delay for natural feel
         yield return new WaitForSeconds(0.8f);
         if (GameManager.instance.gameOver) yield break;
 
-        // 2. Determine Action: Placement or Movement
-        // Note: We check Capture FIRST in case the game loaded into a capture state
+        //  Determine Action- Placement or Movement
+        //capture is checked first because if the player just formed a mill, the AI must capture before doing anything else
         if (GameManager.instance.IsCapturing())
         {
-            ExecuteCapture();
+            ExecuteCapture();// If in capture mode, perform capture immediately (before placement/movement) to properly respond to player mills
         }
         else if (GameManager.instance.piecesPlaced < 24) 
         {
@@ -47,10 +46,10 @@ public class AIManager : MonoBehaviour
             yield return StartCoroutine(ExecuteMovementCoroutine());
         }
 
-        // 3. WAIT for the game state to update (important for mill detection)
+        //  Wait for the game state to update (important for mill detection)
         yield return new WaitForSeconds(0.2f);
 
-        // 4. CAPTURE CHECK: If the action above created a mill, perform capture now
+        //  check if the action above created a mill, perform capture now
         if (GameManager.instance.IsCapturing() && !GameManager.instance.gameOver)
         {
             yield return new WaitForSeconds(0.6f); // Wait to show the mill was formed
@@ -58,7 +57,7 @@ public class AIManager : MonoBehaviour
         }
     }
 
-    // --- AI STRATEGIES ---
+    //AI Strategies
 
     void ExecutePlacement()
     {
@@ -71,15 +70,15 @@ public class AIManager : MonoBehaviour
         {
             target = emptyNodes[Random.Range(0, emptyNodes.Count)];
         }
-        else // Medium & Hard: Try to complete a mill or block player
+        else // Medium & Hard-Try to complete a mill or block player
         {
-            target = FindBestPlacement(emptyNodes);
+            target = FindBestPlacement(emptyNodes);// This method encapsulates the strategic logic for placement based on difficulty
         }
 
         if (target != null)
         {
             UndoRedoManager.instance.SaveState();
-            Color aiColor = (aiPlayerNumber == 1) ? GameManager.instance.p1BaseColor : GameManager.instance.p2BaseColor;
+            Color aiColor = (aiPlayerNumber == 1) ? GameManager.instance.p1BaseColor : GameManager.instance.p2BaseColor;// Determine the AI's color based on its player number
 
             // Execute logic
             target.OnClicked(aiPlayerNumber, aiColor);
@@ -87,7 +86,7 @@ public class AIManager : MonoBehaviour
         }
     }
 
-    IEnumerator ExecuteMovementCoroutine()
+    IEnumerator ExecuteMovementCoroutine()// Movement is more complex due to the need to select both a piece to move and a destination,  a Coroutine used to allow for visual highlights and delays
     {
         var validMoves = GetAvailableMoves();
         if (validMoves.Count == 0) yield break;
@@ -102,9 +101,9 @@ public class AIManager : MonoBehaviour
             var millMoves = validMoves.Where(m => WouldFormMill(m.to, aiPlayerNumber, m.from)).ToList();
             choice = (millMoves.Count > 0) ? millMoves[Random.Range(0, millMoves.Count)] : validMoves[Random.Range(0, validMoves.Count)];
         }
-        // --- VISUAL HIGHLIGHT LOGIC ---
+        //Visual highlight logic
 
-        // 1. Manually set the Material Color to Green (to match human movement)
+        //Manually set the Material Color to Green 
         Renderer r = choice.from.GetComponent<Renderer>();
 
         if (r != null)
@@ -112,17 +111,17 @@ public class AIManager : MonoBehaviour
             r.material.color = Color.green;
         }
 
-        // 2. Turn on the Glow using the AI's specific glow color from GameManager
+        // Turn on the Glow using the AI's specific glow color from GameManager
         Color aiGlow = (aiPlayerNumber == 1) ? GameManager.instance.p1GlowColor : GameManager.instance.p2GlowColor;
         choice.from.SetGlow(true, aiGlow);
 
-        // 3. Wait for 1 second so the player sees the "Selection"
+        // Wait for 1 second so the player sees the "Selection"
         yield return new WaitForSeconds(1.0f);
 
-        // --- EXECUTE MOVE ---
+        //EXECUTE MOVE 
         UndoRedoManager.instance.SaveState();
 
-        // Clear the old node (this also resets its color/glow internally)
+        // Clear the old node
         choice.from.ClearNode();
 
         Color aiBaseColor = (aiPlayerNumber == 1) ? GameManager.instance.p1BaseColor : GameManager.instance.p2BaseColor;
@@ -135,7 +134,7 @@ public class AIManager : MonoBehaviour
     {
         int opponent = (aiPlayerNumber == 1) ? 2 : 1;
 
-        // Rules: Must take pieces NOT in a mill, unless ALL pieces are in mills
+        //Must take pieces NOT in a mill, unless ALL pieces are in mills
         var allOpponentPieces = GameManager.instance.allNodes.Where(n => n.owner == opponent).ToList();
         var validTargets = allOpponentPieces.Where(n => !IsPartOfMill(n)).ToList();
 
@@ -145,25 +144,25 @@ public class AIManager : MonoBehaviour
 
         if (validTargets.Count > 0)
         {
-            Node target = validTargets[Random.Range(0, validTargets.Count)];
+            Node target = validTargets[Random.Range(0, validTargets.Count)];// Randomly select a target from the valid options to capture
             GameManager.instance.TryCapture(target);
         }
     }
 
-    // --- HELPERS ---
+    //Helpers
 
     Node FindBestPlacement(List<Node> options)
     {
-        // 1. Can AI finish a mill?
+        //check if any move can form a mill for the AI
         foreach (var node in options)
             if (WouldFormMill(node, aiPlayerNumber)) return node;
 
-        // 2. Can AI block a Player mill?
+        //check if any move can block the opponent from forming a mill on their next turn
         int opponent = (aiPlayerNumber == 1) ? 2 : 1;
         foreach (var node in options)
             if (WouldFormMill(node, opponent)) return node;
 
-        // 3. Prefer high-connectivity nodes (center squares)
+        //rather than random, prefer placements that are part of more potential mills (more neighbors) to increase future mill opportunities
         return options.OrderByDescending(n => n.neighbours.Count).First();
     }
 
@@ -179,7 +178,7 @@ public class AIManager : MonoBehaviour
                 {
                     if (id == node.nodeID) continue;
                     Node n = GameManager.instance.allNodes[id];
-                    // During movement, the "from" node must be ignored as it's about to be empty
+                    // If we're checking a potential move, we want to ignore the piece being moved from its original position since it won't be there when we check for mills
                     if (n == ignoreNode) continue;
                     if (n.owner == player) count++;
                 }
@@ -189,22 +188,22 @@ public class AIManager : MonoBehaviour
         return false;
     }
 
-    struct Move { public Node from; public Node to; }
+    struct Move { public Node from; public Node to; }// Simple struct to represent a potential move for the movement phase, containing both the starting node and the destination node
 
     List<Move> GetAvailableMoves()
     {
         List<Move> moves = new List<Move>();
-        var myNodes = GameManager.instance.allNodes.Where(n => n.owner == aiPlayerNumber);
+        var myNodes = GameManager.instance.allNodes.Where(n => n.owner == aiPlayerNumber);// Get all nodes currently occupied by the AI's pieces
 
         foreach (var fromNode in myNodes)
         {
             bool aiFlying = GameManager.instance.IsFlying(aiPlayerNumber);
 
-            foreach (var toNode in GameManager.instance.allNodes.Where(n => !n.isOccupied))
+            foreach (var toNode in GameManager.instance.allNodes.Where(n => !n.isOccupied))// For each empty node, check if it's a valid move destination. If the AI is flying, it can move to any empty node. Otherwise, it can only move to neighboring nodes.
             {
                 if (aiFlying || fromNode.neighbours.Contains(toNode))
                 {
-                    moves.Add(new Move { from = fromNode, to = toNode });
+                    moves.Add(new Move { from = fromNode, to = toNode });// If the move is valid, add it to the list of potential moves for the movement phase
                 }
             }
         }
@@ -217,9 +216,9 @@ public class AIManager : MonoBehaviour
 
         foreach (int[] line in GameManager.millLines)
         {
-            if (line.Contains(node.nodeID))
+            if (line.Contains(node.nodeID))// Check if the node is part of this mill line
             {
-                if (GameManager.instance.allNodes[line[0]].owner == node.owner &&
+                if (GameManager.instance.allNodes[line[0]].owner == node.owner &&// If all nodes in the line are owned by the same player, then this node is part of a mill
                     GameManager.instance.allNodes[line[1]].owner == node.owner &&
                     GameManager.instance.allNodes[line[2]].owner == node.owner)
                 {
