@@ -3,17 +3,6 @@ using TMPro;
 using System.Linq;
 using System.Collections.Generic;
 
-/// <summary>
-/// GameManager = Core controller ("brain") of the game.
-/// Handles:
-/// - Turns
-/// - Phase switching (Placement → Movement)
-/// - Mill detection
-/// - Capture logic
-/// - Piece counting & win conditions
-/// - Flying rule
-/// - Anti-repeat mill rule
-/// </summary>
 public class GameManager : MonoBehaviour
 {
     // Singleton instance so other scripts can easily access GameManager
@@ -22,25 +11,25 @@ public class GameManager : MonoBehaviour
     [Header("Board Setup")]
     public Node[] allNodes; // All 24 nodes on the board
 
-    [Header("UI References")]
+    [Header("UI References")]// References to UI text elements for dynamic updates
     public TextMeshProUGUI instructionText;
     public TextMeshProUGUI turnText;
     public TextMeshProUGUI phaseText;
     public TextMeshProUGUI winText;
     public GameObject winScreen;
 
-    [Header("Piece Counter UI")]
+    [Header("Piece Counter UI")]// Displays pieces left to place during placement phase, and pieces left on board during movement phase
     public TextMeshProUGUI p1PiecesText;
     public TextMeshProUGUI p2PiecesText;
 
-    [Header("Placement Counters")]
+    [Header("Placement Counters")]// Tracks how many pieces each player has left to place on the board  
     public int p1PiecesToPlace = 12;
     public int p2PiecesToPlace = 12;
     // Tracks remaining pieces (used for flying + win condition)
     public int p1PiecesLeft = 0;
     public int p2PiecesLeft = 0;
 
-    [Header("Player Colors")]
+    [Header("Player Colors")]// Base colors for each player's pieces
     public Color p1BaseColor = Color.red;
     public Color p2BaseColor = Color.blue;
 
@@ -50,20 +39,15 @@ public class GameManager : MonoBehaviour
 
     [Header("Game State")]
     public int currentPlayer = 1;   // Tracks whose turn it is
-    private bool isCapturing = false; // True when player must capture a piece
+    private bool isCapturing = false; // allows player to capture a piece when valid
     public int piecesPlaced = 0;   // Used to detect end of placement phase
     public bool gameOver = false;
-    public bool p1FlyingPhase = false;
-    public bool p2FlyingPhase = false;
+    public bool p1FlyingPhase = false;// Tracks if player 1 is in flying phase (3 or fewer pieces left)
+    public bool p2FlyingPhase = false;// Tracks if player 2 is in flying phase (3 or fewer pieces left)
 
-    // Prevents players from abusing the same mill repeatedly
-    private List<int> lastMill = new List<int> { -1, -1, -1 };
     public Color validCaptureColor = Color.magenta;// colour to change pieces to when they are valid capture targets (used in capture mode)
 
-    /// <summary>
-    /// All valid mill combinations (3-in-a-row)
-    /// Each entry refers to node IDs
-    /// </summary>
+    // All valid mill combinations (3-in-a-row)
     public static readonly int[][] millLines = new int[][]
     {
         new[] {0,1,2}, new[] {3,4,5}, new[] {6,7,8},
@@ -81,7 +65,7 @@ public class GameManager : MonoBehaviour
     void Awake()
     {
         instance = this;
-        // Ensure nodes are ordered by ID (important for consistency)
+        // Ensure nodes are ordered by ID 
         allNodes = allNodes.OrderBy(n => n.nodeID).ToArray();
     }
 
@@ -102,9 +86,8 @@ public class GameManager : MonoBehaviour
         UpdatePieceUI();
     }
 
-    /// <summary>
-    /// Updates turn display and color
-    /// </summary>
+ 
+    // Updates turn display and color
     public void UpdateTurnUI()
     {
         if (turnText != null)
@@ -165,9 +148,8 @@ public class GameManager : MonoBehaviour
         p2PiecesText.color = p2BaseColor;
     }
 
-    /// <summary>
-    /// Updates phase display (Placement / Movement)
-    /// </summary>
+  
+    // Updates phase display (Placement / Movement)
     public void UpdatePhaseUI(string phase)
     {
         if (phaseText == null) return;
@@ -176,20 +158,19 @@ public class GameManager : MonoBehaviour
         phaseText.color = Color.white;
     }
 
-    /// <summary>
-    /// Called whenever a piece is placed during placement phase
-    /// </summary>
+ 
+    // Called whenever a piece is placed during placement phase
     public void OnPiecePlaced(Node node)
     {
         if (currentPlayer == 1)
         {
-            p1PiecesToPlace--;
-            p1PiecesLeft++;
+            p1PiecesToPlace--;// Decrease pieces left to place
+            p1PiecesLeft++;// Increase pieces on board
         }
         else
         {
-            p2PiecesToPlace--;
-            p2PiecesLeft++;
+            p2PiecesToPlace--;// Decrease pieces left to place
+            p2PiecesLeft++;// Increase pieces on board
         }
 
         UpdatePieceUI();
@@ -205,10 +186,8 @@ public class GameManager : MonoBehaviour
             FindObjectOfType<PhaseState>().SwitchToMovementPhase();
         }
     }
-
-    /// <summary>
-    /// Returns the mill (list of 3 node IDs) if one is formed, otherwise null
-    /// </summary>
+   
+    // Returns the mill (list of 3 node IDs) if one is formed, otherwise null
     List<int> GetMillFormed(Node node)
     {
         foreach (int[] line in millLines)
@@ -226,30 +205,10 @@ public class GameManager : MonoBehaviour
         return null;
     }
 
-    /// <summary>
-    /// Checks if two mills are identical (used to prevent repetition exploit)
-    /// </summary>
-    bool IsSameMill(List<int> m1, List<int> m2)
-    {
-        if (m1 == null || m2 == null) return false;
-        return m1.SequenceEqual(m2);
-    }
+    // Activates capture mode if a valid mill is formed
 
-    /// <summary>
-    /// Activates capture mode if a valid (new) mill is formed
-    /// </summary>
     void EnterCaptureMode(List<int> newMill)
     {
-        ////  Prevent infinite mill exploit
-        //if (IsSameMill(newMill, lastMill))
-        //{
-        //    Debug.Log("Repeat mill - no capture allowed");
-        //    SwitchTurn();
-        //    return;
-        //}
-
-        // Store this mill so it can't be reused immediately
-        lastMill = new List<int>(newMill);
 
         isCapturing = true;
 

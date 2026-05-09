@@ -4,7 +4,7 @@ using UnityEngine.InputSystem;
 public class Movement : MonoBehaviour
 {
     [Header("Camera & Controls")]
-    public Camera mainCamera; // To convert screen clicks to game world positions
+    public Camera mainCamera;
     private InputSystem_Actions controls;
 
     [Header("Selection State")]
@@ -20,15 +20,14 @@ public class Movement : MonoBehaviour
     void OnEnable() => controls.Enable();
     void OnDisable() => controls.Disable();
 
-    // <summary>
+    
     // Triggered every time the player clicks. 
     // Handles Selection, Deselection, and Destination picking.
-    // </summary>
     void OnClick()
     {
         if (AIManager.instance.isAIActive && GameManager.instance.currentPlayer == AIManager.instance.aiPlayerNumber)
             return;
-        // 1. Raycast to see what was clicked
+        // Raycast to see what was clicked
         Vector2 worldPos = mainCamera.ScreenToWorldPoint(Mouse.current.position.ReadValue());
         RaycastHit2D hit = Physics2D.Raycast(worldPos, Vector2.zero);
 
@@ -37,17 +36,17 @@ public class Movement : MonoBehaviour
             Node clickedNode = hit.collider.GetComponent<Node>();
             if (clickedNode == null) return;
 
-            // --- CAPTURE PHASE OVERRIDE ---
-            // If the game is waiting for a capture, we skip movement and go to TryCapture
-            if (GameManager.instance.IsCapturing())
+           
+           
+            if (GameManager.instance.IsCapturing())//checks if we are in capture mode, if so, try to capture the clicked node instead of moving
             {
-                GameManager.instance.TryCapture(clickedNode);
+                GameManager.instance.TryCapture(clickedNode);//calls capture logic in gamemanager, which checks if the capture is valid and updates the game state accordingly
                 return;
             }
 
-            // --- MOVEMENT PHASE LOGIC ---
+            // movement logic
 
-            // STEP 1: If nothing is selected yet, try to pick up a piece
+            // checks if nothing is selected and tries to pick up a piece
             if (selectedNode == null)
             {
                 // Only allow selecting a piece that belongs to the current player
@@ -56,21 +55,21 @@ public class Movement : MonoBehaviour
                     SelectPiece(clickedNode);
                 }
             }
-            // STEP 2: If a piece is already selected, handle the next click
+            // handles the next click if piece is already selected, either deselecting, switching selection, or trying to move
             else
             {
-                // A) Clicked the same piece again -> Deselect/Turn off highlight
+                // Clicked the same piece again- Deselect/Turn off highlight
                 if (clickedNode == selectedNode)
                 {
                     DeselectPiece();
                 }
-                // B) Clicked another of your own pieces -> Switch the highlight to that one
+                // Clicked another of your own pieces - Switch the highlight to that one
                 else if (clickedNode.owner == GameManager.instance.currentPlayer)
                 {
                     DeselectPiece();
                     SelectPiece(clickedNode);
                 }
-                // C) Clicked an empty spot -> Attempt to move there
+                //Clicked an empty spot - Attempt to move there
                 else if (!clickedNode.isOccupied)
                 {
                     TryMove(clickedNode);
@@ -79,15 +78,14 @@ public class Movement : MonoBehaviour
         }
     }
 
-    // <summary>
+    
     // Changes the piece to Green and turns on the glow.
-    // </summary>
     void SelectPiece(Node node)
     {
         selectedNode = node;
         int player = GameManager.instance.currentPlayer;
 
-        // 1. Change the actual material color to Green
+        // Change the actual material color to Green
         Renderer r = selectedNode.GetComponent<Renderer>();
 
         if (r != null)
@@ -100,14 +98,13 @@ public class Movement : MonoBehaviour
         selectedNode.SetGlow(true, highlightColor);
     }
 
-    // <summary>
+  
     // Reverts the piece back to its original team color and turns off glow.
-    // </summary>
     void DeselectPiece()
     {
         if (selectedNode != null)
         {
-            //  Determine original team color based on the owner of the selected node
+            //  Determines original team color based on the owner of the selected node
             Color teamColor = (selectedNode.owner == 1) ? GameManager.instance.p1BaseColor : GameManager.instance.p2BaseColor;
 
             //  Revert the material color
@@ -124,13 +121,12 @@ public class Movement : MonoBehaviour
         selectedNode = null;
     }
 
-    // <summary>
-    // Checks Morabaraba rules: Is it a neighbor, or are you in "Flying" mode?
-    // </summary>
+   
+    // checks if moving to neighbour or in the flying phase and handles errors accordingly
     void TryMove(Node targetNode)
     {
         if (gm.gameOver) return;
-        // Use FlyingPhase instead of manual logic
+        // calls flying phase logic
         if (FlyingPhase.instance.CanMove(selectedNode, targetNode))
         {
             ExecuteMove(targetNode);
@@ -141,24 +137,23 @@ public class Movement : MonoBehaviour
         }
     }
 
-    // <summary>
+ 
     // Moves the piece data and visual color, then resets the glow.
-    // </summary>
     void ExecuteMove(Node targetNode)
     {
         int player = GameManager.instance.currentPlayer;
 
-        Color teamColor = (player == 1) ? GameManager.instance.p1BaseColor : GameManager.instance.p2BaseColor;
+        Color teamColor = (player == 1) ? GameManager.instance.p1BaseColor : GameManager.instance.p2BaseColor;// Determine the team color based on the current player
 
         selectedNode.SetGlow(false);
-        UndoRedoManager.instance.SaveState();
+        UndoRedoManager.instance.SaveState();// Save the state before making the move for undo functionality
         selectedNode.ClearNode();
 
-        targetNode.OnClicked(player, teamColor);
+        targetNode.OnClicked(player, teamColor);// Update the target node with the new piece
 
         selectedNode = null;
 
         
-        GameManager.instance.CheckMillAndSwitchTurn(targetNode);
+        GameManager.instance.CheckMillAndSwitchTurn(targetNode);// Check if the move formed a mill and switch turns
     }
 }
