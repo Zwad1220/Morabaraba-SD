@@ -3,10 +3,9 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Morabaraba</title>
+    <title> Morabaraba</title>
     <link rel="shortcut icon" href="TemplateData/favicon.ico">
     <link rel="stylesheet" href="TemplateData/style.css">
-     <link rel="stylesheet" href="styles.css">
   </head>
   <body>
     <div id="unity-container" class="unity-desktop">
@@ -64,7 +63,6 @@
         productName: "Morabaraba",
         productVersion: "1.0",
         showBanner: unityShowBanner,
-        matchWebGLToCanvasSize: false,
       };
 
       // By default, Unity keeps WebGL canvas render target size matched with
@@ -100,8 +98,8 @@
 
       } else {
         // Desktop style: Render the game canvas in a window that can be maximized to fullscreen:
-        canvas.style.width = "100%";
-        canvas.style.height = "100%";
+        canvas.style.width = "960px";
+        canvas.style.height = "600px";
       }
 
       document.querySelector("#unity-loading-bar").style.display = "block";
