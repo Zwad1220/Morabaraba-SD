@@ -21,6 +21,12 @@ public class UndoRedoManager : MonoBehaviour
         redoState = null;
     }
 
+    public void ClearHistory()
+    {
+        previousState = null;
+        redoState = null;
+    }
+
     //Undo only last move
     public void Undo()
     {

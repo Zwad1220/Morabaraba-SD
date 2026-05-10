@@ -492,7 +492,7 @@ public class GameManager : MonoBehaviour
         piecesPlaced = 0;
 
         movesWithoutCapture = 0;
-
+        UndoRedoManager.instance.ClearHistory();
         // 3. Reset game state flags
         currentPlayer = 1;
         gameOver = false;
