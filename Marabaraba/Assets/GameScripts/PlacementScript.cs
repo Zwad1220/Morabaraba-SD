@@ -22,6 +22,8 @@ public class Placement : MonoBehaviour
 
     void OnClick()
     {
+        if (GameManager.instance.gameOver)
+            return;
         if (AIManager.instance.isAIActive && GameManager.instance.currentPlayer == AIManager.instance.aiPlayerNumber)
             return;
         // Get the mouse position and convert it to a point in the game world
@@ -60,6 +62,7 @@ public class Placement : MonoBehaviour
 
                 // Tells the GameManager a piece was placed so it can check for mills and swap turns
                 GameManager.instance.OnPiecePlaced(node);
+                GameManager.instance.movesWithoutCapture++;
             }
         }
     }

@@ -22,12 +22,19 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI p1PiecesText;
     public TextMeshProUGUI p2PiecesText;
 
+    [Header("Draw UI")]
+    public GameObject drawPanel;
+
     [Header("Placement Counters")]// Tracks how many pieces each player has left to place on the board  
     public int p1PiecesToPlace = 12;
     public int p2PiecesToPlace = 12;
     // Tracks remaining pieces (used for flying + win condition)
     public int p1PiecesLeft = 0;
     public int p2PiecesLeft = 0;
+
+    [Header("Draw System")]
+    public int movesWithoutCapture = 0;
+    public int drawMoveLimit = 10;
 
     [Header("Player Colors")]// Base colors for each player's pieces
     public Color p1BaseColor = Color.red;
@@ -245,7 +252,7 @@ public class GameManager : MonoBehaviour
             p2PiecesLeft--;
         UpdatePieceUI();
 
-        
+        movesWithoutCapture = 0;
 
         // Win conditions
         if (piecesPlaced >= 24)
@@ -329,6 +336,12 @@ public class GameManager : MonoBehaviour
         {
             FindObjectOfType<PhaseState>().SwitchToMovementPhase();
         }
+        // Draw Check
+        if (movesWithoutCapture >= drawMoveLimit)
+        {
+            EndDraw();
+            return;
+        }
     }
 
     public bool IsCapturing() => isCapturing;
@@ -405,6 +418,8 @@ public class GameManager : MonoBehaviour
         p2PiecesLeft = 0;
         piecesPlaced = 0;
 
+        movesWithoutCapture = 0;
+
         // 3. Reset game state flags
         currentPlayer = 1;
         gameOver = false;
@@ -413,7 +428,11 @@ public class GameManager : MonoBehaviour
         isCapturing = false;
 
         // 4. Update the UI to reflect a fresh start
-        if (winScreen != null) winScreen.SetActive(false);
+        if (winScreen != null)
+            winScreen.SetActive(false);
+
+        if (drawPanel != null)
+            drawPanel.SetActive(false);
         if (instructionText != null) instructionText.text = "Place a piece on an empty slot.";
 
         UpdateTurnUI();
@@ -428,7 +447,26 @@ public class GameManager : MonoBehaviour
             ps.movementPhase.enabled = false;
         }
     }
-  public bool CheckForMill(Node node, int playerID)
+
+    public void EndDraw()
+    {
+        gameOver = true;
+
+        drawPanel.SetActive(true);
+
+        Debug.Log("Game Ended In Draw");
+
+        // Disable gameplay
+        FindObjectOfType<Placement>().enabled = false;
+        FindObjectOfType<Movement>().enabled = false;
+
+        // Stop AI
+        if (AIManager.instance != null)
+        {
+            AIManager.instance.StopAllCoroutines();
+        }
+    }
+    public bool CheckForMill(Node node, int playerID)
     {
         // Reuses your existing GetMillFormed logic to satisfy the unit tests
         var mill = GetMillFormed(node);

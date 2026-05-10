@@ -83,6 +83,7 @@ public class AIManager : MonoBehaviour
             // Execute logic
             target.OnClicked(aiPlayerNumber, aiColor);
             GameManager.instance.OnPiecePlaced(target);
+            GameManager.instance.movesWithoutCapture++;
         }
     }
 
@@ -128,6 +129,7 @@ public class AIManager : MonoBehaviour
         choice.to.OnClicked(aiPlayerNumber, aiBaseColor);
 
         GameManager.instance.CheckMillAndSwitchTurn(choice.to);
+        GameManager.instance.movesWithoutCapture++;
     }
 
     void ExecuteCapture()
