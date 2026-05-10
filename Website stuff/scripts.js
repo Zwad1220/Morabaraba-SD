@@ -22,7 +22,7 @@ const games = [
       6. WINNING THE GAME:
       You win if your opponent is reduced to two cows or is unable to make a valid move.
     `,
-    page: "game/morabaraba.html"
+    page: "game.html"
   }
 ];
 
