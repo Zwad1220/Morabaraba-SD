@@ -2,25 +2,34 @@ const games = [
   {
     title: "Morabaraba",
     description: "The traditional African strategy game of 'Cows'. Outsmart your opponent and capture their herd.",
-    image: "https://images.unsplash.com/photo-1611195974226-a6a9be9dd763?q=80&w=1200",
-    rules: `
-      1. THE PLACEMENT PHASE:
-      Each player starts with 12 'cows'. Players take turns placing one cow at a time on any empty intersection on the board.
+    image: "Morabaraba_picture.png",
+    rules: `How to Play: Rules of the Game
 
-      2. FORMING A MILL:
-      If you place three of your cows in a straight line (horizontally, vertically, or diagonally), you have formed a 'mill'. 
+1. THE PLACEMENT PHASE
+Each player starts with 12 pieces (traditionally called "cows"). Players take turns placing one cow at a time onto any empty intersection on the board. The goal during this phase is to position your cows to form "mills" while blocking your opponent from doing the same.
 
-      3. SHOOTING A COW:
-      When you form a mill, you can 'shoot' (remove) one of your opponent's cows from the board, provided that cow is not currently part of their own mill.
+2. FORMING A MILL
+A Mill is formed when you place three of your cows in a straight line—whether horizontally, vertically, or diagonally. Forming a mill is the primary way to gain an advantage, as it allows you to weaken your opponent’s forces.
 
-      4. THE MOVEMENT PHASE:
-      Once all cows are placed, players take turns moving a cow to an adjacent empty spot. Forming mills still allows you to capture opponent cows.
+3. SHOOTING A COW
+When you form a mill, you immediately "shoot" (remove) one of your opponent's cows from the board.
 
-      5. THE FLYING PHASE:
-      When a player is reduced to only three cows, they can 'fly'—meaning they can move their cow to any empty spot on the board, regardless of distance.
+The Golden Rule: You cannot shoot a cow that is currently part of a mill unless all of your opponent’s cows are already in mills.
 
-      6. WINNING THE GAME:
-      You win if your opponent is reduced to two cows or is unable to make a valid move.
+Breaking the Mill: You can move a cow out of an existing mill and move it back on your next turn to "re-form" the mill and shoot another cow.
+
+4. THE MOVEMENT PHASE
+Once all 12 cows have been placed on the board, the game shifts to movement. Players take turns moving one cow to an adjacent empty spot along the lines of the board. You continue to try and form mills to remove your opponent's pieces.
+
+5. THE FLYING PHASE
+When a player is reduced to only three cows, they enter the "Flying Phase." This player is no longer restricted to adjacent spots; they can "fly" their cows to any empty intersection on the board. This gives a disadvantaged player a tactical boost to force a draw or a comeback.
+
+6. WINNING THE GAME
+A player wins under two conditions:
+
+Reduction: The opponent is reduced to only two cows (making it impossible for them to form a mill).
+
+Gridlock: The opponent is unable to make any legal moves (all their pieces are blocked)
     `,
     page: "game.html"
   }
