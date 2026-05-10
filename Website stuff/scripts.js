@@ -3,10 +3,10 @@ const games = [
     title: "Morabaraba",
     description: "The traditional African strategy game of 'Cows'. Outsmart your opponent and capture their herd.",
     image: "Morabaraba_picture.png",
-    rules: `How to Play: Rules of the Game
+    rules: `How to Play: Rules of the Game 
 
 1. THE PLACEMENT PHASE
-Each player starts with 12 pieces (traditionally called "cows"). Players take turns placing one cow at a time onto any empty intersection on the board. The goal during this phase is to position your cows to form "mills" while blocking your opponent from doing the same.
+Each player starts with 12 pieces (traditionally called "cows"). Players take turns placing one cow at a time onto any empty nodes on the board (clicking on empty circles). The goal during this phase is to position your cows to form "mills" while blocking your opponent from doing the same.
 
 2. FORMING A MILL
 A Mill is formed when you place three of your cows in a straight line—whether horizontally, vertically, or diagonally. Forming a mill is the primary way to gain an advantage, as it allows you to weaken your opponent’s forces.
