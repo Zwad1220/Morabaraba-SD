@@ -27,8 +27,20 @@ public class Placement : MonoBehaviour
         if (AIManager.instance.isAIActive && GameManager.instance.currentPlayer == AIManager.instance.aiPlayerNumber)
             return;
         // Get the mouse position and convert it to a point in the game world
-        Vector2 mousePos = Mouse.current.position.ReadValue();
-        Vector2 worldPos = mainCamera.ScreenToWorldPoint(mousePos);
+        Vector2 inputPos;
+
+        // mobile touch
+        if (Touchscreen.current != null && Touchscreen.current.primaryTouch.press.isPressed)
+        {
+            inputPos = Touchscreen.current.primaryTouch.position.ReadValue();
+        }
+        // desktop mouse
+        else
+        {
+            inputPos = Mouse.current.position.ReadValue();
+        }
+
+        Vector2 worldPos = mainCamera.ScreenToWorldPoint(inputPos);
 
         // Fire a Raycast (an invisible laser) to see if we clicked on a Node collider
         RaycastHit2D hit = Physics2D.Raycast(worldPos, Vector2.zero);
