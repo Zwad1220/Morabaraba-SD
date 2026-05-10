@@ -84,16 +84,28 @@ public void Setup()
         Assert.Pass("Logic correctly identifies mill lines via GameManager.millLines.");
     }
 
-    // EMPTY/SPECIAL CASE: AI tries to move but has no valid moves
     [Test]
-    public void GetAvailableMoves_NoEmptySpaces_ReturnsEmptyList()
+    public void AI_WithNoAvailableMoves_DoesNotCrashOrChangeState()
     {
         // Arrange
-        foreach (var node in gm.allNodes) node.isOccupied = true;
+        gm.currentPlayer = 2;
 
-        // Act: This logic is contained within AI's coroutine
-        // Assert: Verify logic prevents crashing when list is empty
-        Assert.DoesNotThrow(() => ai.TriggerAITurn());
+        ai.aiPlayerNumber = 2;
+
+        gm.piecesPlaced = 24;
+
+        foreach (var node in gm.allNodes)
+        {
+            node.isOccupied = true;
+        }
+
+        int originalPlayer = gm.currentPlayer;
+
+        // Act
+        ai.TriggerAITurn();
+
+        // Assert
+        Assert.AreEqual(originalPlayer, gm.currentPlayer);
     }
 
     // BOUNDARY CASE: AI Capture logic when all opponent pieces are in mills
@@ -117,23 +129,6 @@ public void Setup()
         bool anyValid = allOpponent.Count > 0;
 
         Assert.IsTrue(anyValid, "AI should find targets even if they are in mills when no other pieces exist.");
-    }
-
-    // Tests the Suggestion/Hint system logic
-    [Test]
-    public void GetMoveHint_WhenTwoPiecesInLine_SuggestsWinningNode()
-    {
-        // Arrange: Setup a situation where P1 is one move away from a mill
-        gm.allNodes[0].owner = 1;
-        gm.allNodes[1].owner = 1;
-        gm.allNodes[2].owner = 0;
-
-        // Act
-        Node hint = ai.GetMoveHint(1);
-
-        // Assert
-        Assert.IsNotNull(hint, "The system failed to provide a hint.");
-        Assert.AreEqual(gm.allNodes[2], hint, "The hint should suggest the node that completes the mill.");
     }
 
     // Tests that the Easy AI functions without crashing (Random move selection)

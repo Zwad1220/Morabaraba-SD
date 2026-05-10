@@ -11,6 +11,10 @@ public class NodeTests
     public void Setup()
     {
         nodeObj = new GameObject();
+
+        nodeObj.AddComponent<SpriteRenderer>()
+            .sharedMaterial = new Material(Shader.Find("Sprites/Default"));
+
         node = nodeObj.AddComponent<Node>();
     }
 
