@@ -98,7 +98,6 @@ public class Movement : MonoBehaviour
         selectedNode.SetGlow(true, highlightColor);
     }
 
-  
     // Reverts the piece back to its original team color and turns off glow.
     void DeselectPiece()
     {
