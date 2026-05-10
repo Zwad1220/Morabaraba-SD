@@ -12,7 +12,7 @@ Each player starts with 12 pieces (traditionally called "cows"). Players take tu
 A Mill is formed when you place three of your cows in a straight line—whether horizontally, vertically, or diagonally. Forming a mill is the primary way to gain an advantage, as it allows you to weaken your opponent’s forces.
 
 3. SHOOTING A COW
-When you form a mill, you immediately "shoot" (remove) one of your opponent's cows from the board.
+When you form a mill, you immediately "shoot" (remove) one of your opponent's cows from the board. Cows that may be removed will glow pink.
 
 The Golden Rule: You cannot shoot a cow that is currently part of a mill unless all of your opponent’s cows are already in mills.
 
@@ -20,16 +20,18 @@ Breaking the Mill: You can move a cow out of an existing mill and move it back o
 
 4. THE MOVEMENT PHASE
 Once all 12 cows have been placed on the board, the game shifts to movement. Players take turns moving one cow to an adjacent empty spot along the lines of the board. You continue to try and form mills to remove your opponent's pieces.
+Clicking a piece once will highlight it green, indicating it's selected. Click on an adjacent empty spot to move the piece there.
 
 5. THE FLYING PHASE
 When a player is reduced to only three cows, they enter the "Flying Phase." This player is no longer restricted to adjacent spots; they can "fly" their cows to any empty intersection on the board. This gives a disadvantaged player a tactical boost to force a draw or a comeback.
 
 6. WINNING THE GAME
 A player wins under two conditions:
+-Reduction: The opponent is reduced to only two cows (making it impossible for them to form a mill).
+-Gridlock: The opponent is unable to make any legal moves (all their pieces are blocked) the last player to successfully place or move a piece wins.
+-If either player is reduced to three cows, if no captures have been made within ten moves, or if both players are unable to form mills, the game is declared a draw.
 
-Reduction: The opponent is reduced to only two cows (making it impossible for them to form a mill).
-
-Gridlock: The opponent is unable to make any legal moves (all their pieces are blocked)
+Good luck, and may the best strategist win!
     `,
     page: "game.html"
   }
