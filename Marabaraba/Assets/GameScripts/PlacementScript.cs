@@ -62,7 +62,7 @@ public class Placement : MonoBehaviour
 
                 // Tells the GameManager a piece was placed so it can check for mills and swap turns
                 GameManager.instance.OnPiecePlaced(node);
-                GameManager.instance.movesWithoutCapture++;
+                HintManager.instance.ClearHints();
             }
         }
     }

@@ -34,7 +34,7 @@ public class GameManager : MonoBehaviour
 
     [Header("Draw System")]
     public int movesWithoutCapture = 0;
-    public int drawMoveLimit = 10;
+    public int maxMovesWithoutCapture = 10;
 
     [Header("Player Colors")]// Base colors for each player's pieces
     public Color p1BaseColor = Color.red;
@@ -185,6 +185,14 @@ public class GameManager : MonoBehaviour
 
         UpdatePieceUI();
         piecesPlaced++;
+        // DRAW if all nodes occupied after placement phase
+        bool boardFull = allNodes.All(n => n.isOccupied);
+
+        if (piecesPlaced >= 24 && boardFull)
+        {
+            EndDraw();
+            return;
+        }
 
         // Check for mills BEFORE switching turns or phases
         CheckMillAndSwitchTurn(node);
@@ -250,6 +258,7 @@ public class GameManager : MonoBehaviour
         int capturedOwner = node.owner;
 
         node.ClearNode();
+        movesWithoutCapture = 0;
 
         // Update piece counts
         if (capturedOwner == 1)
@@ -257,8 +266,6 @@ public class GameManager : MonoBehaviour
         else if (capturedOwner == 2)
             p2PiecesLeft--;
         UpdatePieceUI();
-
-        movesWithoutCapture = 0;
 
         // Win conditions
         if (piecesPlaced >= 24)
@@ -342,12 +349,6 @@ public class GameManager : MonoBehaviour
         {
             FindObjectOfType<PhaseState>().SwitchToMovementPhase();
         }
-        // Draw Check
-        if (movesWithoutCapture >= drawMoveLimit)
-        {
-            EndDraw();
-            return;
-        }
     }
 
     public bool IsCapturing() => isCapturing;
@@ -370,7 +371,28 @@ public class GameManager : MonoBehaviour
         if (mill != null)
             EnterCaptureMode(mill);// If a mill was formed, enter capture mode instead of switching turn
         else
+            if (mill != null)
+        {
+            EnterCaptureMode(mill);
+        }
+        else
+        {
+            //Only count during movement phase
+            if (piecesPlaced >= 24)
+            {
+                movesWithoutCapture++;
+
+                Debug.Log("Moves without capture: " + movesWithoutCapture);
+
+                if (movesWithoutCapture >= maxMovesWithoutCapture)
+                {
+                    EndDraw();
+                    return;
+                }
+            }
+
             SwitchTurn();
+        }
     }
 
 
