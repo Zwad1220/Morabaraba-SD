@@ -103,4 +103,53 @@ public class GameManagerTests
 
         Assert.AreEqual(2, gm.p2PiecesLeft, "Capture should be allowed if the opponent has no pieces outside of mills.");
     }
+    // Verifies the core mill detection algorithm
+    [Test]
+    public void CheckForMill_WhenThreePiecesFormLine_IdentifiesValidMill()
+    {
+        // Arrange
+        gm.allNodes[0].owner = 1;
+        gm.allNodes[1].owner = 1;
+        gm.allNodes[2].owner = 1;
+
+        // Act
+        bool result = gm.CheckForMill(gm.allNodes[0], 1);
+
+        // Assert
+        Assert.IsTrue(result, "The system should identify three pieces in a line as a mill.");
+    }
+
+    // Tests the rule regarding breaking and reforming mills
+    [Test]
+    public void CheckForMill_WhenMillIsReformed_ValidatesCorrectly()
+    {
+        // Arrange: Set up two pieces, leaving the third slot empty
+        gm.allNodes[1].owner = 1;
+        gm.allNodes[2].owner = 1;
+        gm.allNodes[0].owner = 0;
+
+        // Act: Place a piece to reform the mill
+        gm.allNodes[0].owner = 1;
+        bool result = gm.CheckForMill(gm.allNodes[0], 1);
+
+        // Assert
+        Assert.IsTrue(result, "Reforming a mill must be detected as a new mill event.");
+    }
+
+    [Test]
+    public void ResetGame_WhenCalled_RestoresInitialState()
+    {
+        // Arrange: Set up a modified game state (Guideline: Arrange - Act - Assert)
+        gm.allNodes[0].owner = 1;
+        gm.p1PiecesLeft = 5;
+        gm.gameOver = true;
+
+        // Act: Perform the reset operation
+        gm.ResetGame();
+
+        // Assert: Verify expected behavior (Guideline: Normal cases and Expected results)
+        Assert.AreEqual(0, gm.allNodes[0].owner, "Nodes were not cleared.");
+        Assert.AreEqual(12, gm.p1PiecesToPlace, "Placement count did not reset.");
+        Assert.IsFalse(gm.gameOver, "Game over state was not cleared.");
+    }
 }

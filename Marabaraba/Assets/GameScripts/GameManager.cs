@@ -389,4 +389,49 @@ public class GameManager : MonoBehaviour
             }
         }
     }
+
+    public void ResetGame()
+    {
+        // 1. Clear every node on the board
+        foreach (Node node in allNodes)
+        {
+            node.ClearNode();
+        }
+
+        // 2. Reset all piece counters to project specifications
+        p1PiecesToPlace = 12;
+        p2PiecesToPlace = 12;
+        p1PiecesLeft = 0;
+        p2PiecesLeft = 0;
+        piecesPlaced = 0;
+
+        // 3. Reset game state flags
+        currentPlayer = 1;
+        gameOver = false;
+        p1FlyingPhase = false;
+        p2FlyingPhase = false;
+        isCapturing = false;
+
+        // 4. Update the UI to reflect a fresh start
+        if (winScreen != null) winScreen.SetActive(false);
+        if (instructionText != null) instructionText.text = "Place a piece on an empty slot.";
+
+        UpdateTurnUI();
+        UpdatePieceUI();
+        UpdatePhaseUI("Placement Phase");
+
+        // 5. Ensure the input scripts return to Placement Phase
+        PhaseState ps = FindObjectOfType<PhaseState>();
+        if (ps != null)
+        {
+            ps.placementPhase.enabled = true;
+            ps.movementPhase.enabled = false;
+        }
+    }
+  public bool CheckForMill(Node node, int playerID)
+    {
+        // Reuses your existing GetMillFormed logic to satisfy the unit tests
+        var mill = GetMillFormed(node);
+        return mill != null && node.owner == playerID;
+    }
 }

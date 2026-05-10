@@ -228,4 +228,16 @@ public class AIManager : MonoBehaviour
         }
         return false;
     }
+
+    // Strategic helper to find nodes that would complete a mill
+    public Node GetMoveHint(int playerID)
+    {
+        List<Node> emptyNodes = GameManager.instance.allNodes.Where(n => !n.isOccupied).ToList();
+        foreach (var node in emptyNodes)
+        {
+            if (WouldFormMill(node, playerID))
+                return node;
+        }
+        return null;
+    }
 }

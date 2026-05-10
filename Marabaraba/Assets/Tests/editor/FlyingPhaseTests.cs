@@ -80,4 +80,22 @@ public class FlyingPhaseTests
 
         Assert.IsFalse(flying.CanMove(start, target), "Cannot move to a node that is already occupied.");
     }
+
+    [Test]
+    public void CanMove_WhenFlyingIsActive_AllowsMovementToNonNeighbors()
+    {
+        // Arrange
+        gm.piecesPlaced = 24;
+        gm.currentPlayer = 1;
+        gm.p1PiecesLeft = 3;
+
+        Node start = gm.allNodes[0];
+        Node target = gm.allNodes[10]; // Distant node
+
+        // Act
+        bool result = FlyingPhase.instance.CanMove(start, target);
+
+        // Assert
+        Assert.IsTrue(result, "Flying should allow movement to any empty node regardless of proximity.");
+    }
 }

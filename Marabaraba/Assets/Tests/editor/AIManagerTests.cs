@@ -118,4 +118,34 @@ public void Setup()
 
         Assert.IsTrue(anyValid, "AI should find targets even if they are in mills when no other pieces exist.");
     }
+
+    // Tests the Suggestion/Hint system logic
+    [Test]
+    public void GetMoveHint_WhenTwoPiecesInLine_SuggestsWinningNode()
+    {
+        // Arrange: Setup a situation where P1 is one move away from a mill
+        gm.allNodes[0].owner = 1;
+        gm.allNodes[1].owner = 1;
+        gm.allNodes[2].owner = 0;
+
+        // Act
+        Node hint = ai.GetMoveHint(1);
+
+        // Assert
+        Assert.IsNotNull(hint, "The system failed to provide a hint.");
+        Assert.AreEqual(gm.allNodes[2], hint, "The hint should suggest the node that completes the mill.");
+    }
+
+    // Tests that the Easy AI functions without crashing (Random move selection)
+    [Test]
+    public void GetMove_EasyDifficulty_ExecutesValidMove()
+    {
+        // Arrange
+        ai.currentDifficulty = AIManager.Difficulty.Easy;
+        gm.currentPlayer = 2;
+        ai.aiPlayerNumber = 2;
+
+        // Act & Assert
+        Assert.DoesNotThrow(() => ai.TriggerAITurn(), "Easy AI should execute a move without logic errors.");
+    }
 }
