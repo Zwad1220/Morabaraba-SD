@@ -11,22 +11,31 @@ public class FlyingPhaseTests
     [SetUp]
     public void Setup()
     {
-        // Arrange: Create the test environment
+        // Arrange: Create test environment
         gameObj = new GameObject();
+
         gm = gameObj.AddComponent<GameManager>();
         flying = gameObj.AddComponent<FlyingPhase>();
 
-        // CRITICAL: Manually set the static instances
+        // Static instances
         GameManager.instance = gm;
         FlyingPhase.instance = flying;
 
-        // Setup mock nodes
-        gm.allNodes = new Node[2];
-        for (int i = 0; i < 2; i++)
+        // FULL board setup
+        gm.allNodes = new Node[24];
+
+        for (int i = 0; i < 24; i++)
         {
             GameObject nObj = new GameObject();
-            gm.allNodes[i] = nObj.AddComponent<Node>();
-            gm.allNodes[i].nodeID = i;
+
+            Node node = nObj.AddComponent<Node>();
+            node.nodeID = i;
+
+            // Needed for renderer/material logic
+            var renderer = nObj.AddComponent<SpriteRenderer>();
+            renderer.sharedMaterial = new Material(Shader.Find("Sprites/Default"));
+
+            gm.allNodes[i] = node;
         }
 
         gm.currentPlayer = 1;
@@ -97,5 +106,39 @@ public class FlyingPhaseTests
 
         // Assert
         Assert.IsTrue(result, "Flying should allow movement to any empty node regardless of proximity.");
+    }
+
+    [Test]
+    public void PlayerWithNoValidMoves_CannotMoveAnywhere()
+    {
+        // Arrange
+        gm.piecesPlaced = 24;
+
+        gm.currentPlayer = 1;
+        gm.p1PiecesLeft = 4; // NOT flying
+
+        Node playerNode = gm.allNodes[0];
+        playerNode.owner = 1;
+        playerNode.isOccupied = true;
+
+        Node blocked1 = gm.allNodes[1];
+        blocked1.owner = 2;
+        blocked1.isOccupied = true;
+
+        Node blocked2 = gm.allNodes[2];
+        blocked2.owner = 2;
+        blocked2.isOccupied = true;
+
+        // Only neighbours available are occupied
+        playerNode.neighbours.Add(blocked1);
+        playerNode.neighbours.Add(blocked2);
+
+        // Act
+        bool move1 = flying.CanMove(playerNode, blocked1);
+        bool move2 = flying.CanMove(playerNode, blocked2);
+
+        // Assert
+        Assert.IsFalse(move1);
+        Assert.IsFalse(move2);
     }
 }

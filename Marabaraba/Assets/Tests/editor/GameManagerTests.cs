@@ -152,4 +152,69 @@ public class GameManagerTests
         Assert.AreEqual(12, gm.p1PiecesToPlace, "Placement count did not reset.");
         Assert.IsFalse(gm.gameOver, "Game over state was not cleared.");
     }
+
+    [Test]
+    public void PlacementPhase_When24PiecesPlaced_SwitchesToMovementPhase()
+    {
+        // Arrange
+        gm.piecesPlaced = 23;
+        gm.currentPlayer = 1;
+
+        PhaseState ps = Object.FindObjectOfType<PhaseState>();
+
+        // Act
+        gm.OnPiecePlaced(gm.allNodes[0]);
+
+        // Assert
+        Assert.AreEqual(24, gm.piecesPlaced);
+
+        Assert.IsFalse(ps.placementPhase.enabled,
+            "Placement phase should be disabled.");
+
+        Assert.IsTrue(ps.movementPhase.enabled,
+            "Movement phase should be enabled.");
+    }
+
+    [Test]
+    public void PlayerWithThreePieces_EntersFlyingPhase()
+    {
+        // Arrange
+        gm.piecesPlaced = 24;
+        gm.p1PiecesLeft = 3;
+
+        // Act
+        bool result = gm.IsFlying(1);
+
+        // Assert
+        Assert.IsTrue(result);
+    }
+
+    [Test]
+    public void ResetGame_AfterGameOver_RestoresInitialState()
+    {
+        // Arrange
+        gm.gameOver = true;
+
+        gm.currentPlayer = 2;
+
+        gm.piecesPlaced = 24;
+
+        gm.allNodes[0].owner = 1;
+        gm.allNodes[0].isOccupied = true;
+
+        // Act
+        gm.ResetGame();
+
+        // Assert
+        Assert.IsFalse(gm.gameOver);
+
+        Assert.AreEqual(1, gm.currentPlayer);
+
+        Assert.AreEqual(0, gm.piecesPlaced);
+
+        Assert.AreEqual(0, gm.allNodes[0].owner);
+
+        Assert.IsFalse(gm.allNodes[0].isOccupied);
+    }
+
 }

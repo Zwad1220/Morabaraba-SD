@@ -165,38 +165,44 @@ public class GameManager : MonoBehaviour
         phaseText.color = Color.white;
     }
 
- 
-    // Called whenever a piece is placed during placement phase
+
     public void OnPiecePlaced(Node node)
     {
+        // Assign the owner and update state
+        node.owner = currentPlayer;
+        node.isOccupied = true;
+
         if (currentPlayer == 1)
         {
-            p1PiecesToPlace--;// Decrease pieces left to place
-            p1PiecesLeft++;// Increase pieces on board
+            p1PiecesToPlace--;
+            p1PiecesLeft++;
         }
         else
         {
-            p2PiecesToPlace--;// Decrease pieces left to place
-            p2PiecesLeft++;// Increase pieces on board
+            p2PiecesToPlace--;
+            p2PiecesLeft++;
         }
 
         UpdatePieceUI();
-
         piecesPlaced++;
 
-        // Check if placement formed a mill
+        // Check for mills BEFORE switching turns or phases
         CheckMillAndSwitchTurn(node);
 
-        // Switch to movement phase after all pieces are placed
+        // Switch to movement phase after all pieces are placed 
+        // and we aren't busy capturing a piece
         if (piecesPlaced >= 24 && !isCapturing)
         {
-            FindObjectOfType<PhaseState>().SwitchToMovementPhase();
+            var ps = FindObjectOfType<PhaseState>();
+            if (ps != null) ps.SwitchToMovementPhase();
         }
     }
-   
-    // Returns the mill (list of 3 node IDs) if one is formed, otherwise null
+
     List<int> GetMillFormed(Node node)
     {
+        // Check if the node is empty; an empty node cannot form a mill
+        if (node.owner == 0) return null;
+
         foreach (int[] line in millLines)
         {
             if (line.Contains(node.nodeID))
