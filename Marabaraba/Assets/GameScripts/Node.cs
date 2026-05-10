@@ -12,7 +12,7 @@ public class Node : MonoBehaviour
     public int owner = 0;
 
     private Renderer rend;
-
+    private Color originalColor;
     void Awake()
     {
    

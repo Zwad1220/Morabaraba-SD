@@ -155,6 +155,5 @@ public class Movement : MonoBehaviour
 
         
         GameManager.instance.CheckMillAndSwitchTurn(targetNode);// Check if the move formed a mill and switch turns
-        HintManager.instance.ClearHints();
     }
 }
