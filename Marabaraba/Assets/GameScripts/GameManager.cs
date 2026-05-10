@@ -185,14 +185,6 @@ public class GameManager : MonoBehaviour
 
         UpdatePieceUI();
         piecesPlaced++;
-        // DRAW if all nodes occupied after placement phase
-        bool boardFull = allNodes.All(n => n.isOccupied);
-
-        if (piecesPlaced >= 24 && boardFull)
-        {
-            EndDraw();
-            return;
-        }
 
         // Check for mills BEFORE switching turns or phases
         CheckMillAndSwitchTurn(node);
@@ -334,7 +326,7 @@ public class GameManager : MonoBehaviour
         return allNodes.Any(n => n.owner == player && !IsPartOfMill(n));
     }
 
-  
+
     // Switches turns between players
     public void SwitchTurn()
     {
@@ -349,8 +341,34 @@ public class GameManager : MonoBehaviour
         {
             FindObjectOfType<PhaseState>().SwitchToMovementPhase();
         }
-    }
+        if (piecesPlaced >= 24)
+        {
+            if (!PlayerHasMoves(currentPlayer))
+            {
+                int winner = (currentPlayer == 1) ? 2 : 1;
 
+                gameOver = true;
+
+                // Show win screen
+                if (winScreen != null)
+                    winScreen.SetActive(true);
+
+                // Update winner text
+                if (winText != null)
+                    winText.text =
+                        "Player " + winner + " Wins! Opponent cannot move.";
+
+                // Optional instruction text
+                if (instructionText != null)
+                    instructionText.text =
+                        "Player " + winner + " Wins! Opponent cannot move.";
+
+                Debug.Log("Player " + winner + " Wins!");
+
+                return;
+            }
+        }
+    }
     public bool IsCapturing() => isCapturing;
 
 
@@ -378,21 +396,48 @@ public class GameManager : MonoBehaviour
         else
         {
             //Only count during movement phase
+            // ONLY apply draw rule in movement phase
             if (piecesPlaced >= 24)
             {
-                movesWithoutCapture++;
-
-                Debug.Log("Moves without capture: " + movesWithoutCapture);
-
-                if (movesWithoutCapture >= maxMovesWithoutCapture)
+                // Draw rule ONLY when either player has 3 cows
+                if (p1PiecesLeft == 3 || p2PiecesLeft == 3)
                 {
-                    EndDraw();
-                    return;
+                    movesWithoutCapture++;
+
+                    Debug.Log("Moves without capture: " + movesWithoutCapture);
+
+                    if (movesWithoutCapture >= maxMovesWithoutCapture)
+                    {
+                        EndDraw();
+                        return;
+                    }
                 }
             }
 
             SwitchTurn();
         }
+    }
+
+    bool PlayerHasMoves(int player)
+    {
+        // Flying players can always move
+        if (IsFlying(player))
+            return true;
+
+        var playerNodes = allNodes.Where(n => n.owner == player);
+
+        foreach (Node node in playerNodes)
+        {
+            foreach (Node neighbour in node.neighbours)
+            {
+                if (!neighbour.isOccupied)
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
 
