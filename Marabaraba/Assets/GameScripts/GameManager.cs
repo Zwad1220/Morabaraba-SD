@@ -46,7 +46,7 @@ public class GameManager : MonoBehaviour
 
     [Header("Game State")]
     public int currentPlayer = 1;   // Tracks whose turn it is
-    private bool isCapturing = false; // allows player to capture a piece when valid
+    public bool isCapturing = false; // allows player to capture a piece when valid
     public int piecesPlaced = 0;   // Used to detect end of placement phase
     public bool gameOver = false;
     public bool p1FlyingPhase = false;// Tracks if player 1 is in flying phase (3 or fewer pieces left)
@@ -245,7 +245,6 @@ public class GameManager : MonoBehaviour
 
         //Save Valid captures
         if (gameOver) return;
-        UndoRedoManager.instance.SaveState();
 
         int capturedOwner = node.owner;
 
@@ -519,6 +518,7 @@ public class GameManager : MonoBehaviour
             ps.placementPhase.enabled = true;
             ps.movementPhase.enabled = false;
         }
+        FindObjectOfType<Movement>().ClearValidMoves();
     }
 
     public void EndDraw()

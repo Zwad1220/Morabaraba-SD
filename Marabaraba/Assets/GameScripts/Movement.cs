@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using System.Collections.Generic;
 
 public class Movement : MonoBehaviour
 {
@@ -10,6 +11,12 @@ public class Movement : MonoBehaviour
     [Header("Selection State")]
     private Node selectedNode; // Stores the piece currently picked up/highlighted
     public GameManager gm;
+
+    [Header("Move Highlights")]
+    public GameObject moveHighlightPrefab;
+
+    private List<GameObject> activeHighlights =
+        new List<GameObject>();
     void Awake()
     {
         // Initializing the new Unity Input System
@@ -104,6 +111,7 @@ public class Movement : MonoBehaviour
         // glow for extra feedback
         Color highlightColor = (player == 1) ? GameManager.instance.p1GlowColor : GameManager.instance.p2GlowColor;
         selectedNode.SetGlow(true, highlightColor);
+        ShowValidMoves(node);
     }
 
     // Reverts the piece back to its original team color and turns off glow.
@@ -125,6 +133,7 @@ public class Movement : MonoBehaviour
             //  Turn off the glow
             selectedNode.SetGlow(false);
         }
+        ClearValidMoves();
         selectedNode = null;
     }
 
@@ -158,9 +167,62 @@ public class Movement : MonoBehaviour
 
         targetNode.OnClicked(player, teamColor);// Update the target node with the new piece
 
+        ClearValidMoves();
         selectedNode = null;
 
         
         GameManager.instance.CheckMillAndSwitchTurn(targetNode);// Check if the move formed a mill and switch turns
+    }
+
+    void ShowValidMoves(Node node)
+    {
+        Debug.Log("ShowValidMoves CALLED");
+        ClearValidMoves();
+
+        bool flying =
+            GameManager.instance.IsFlying(
+                GameManager.instance.currentPlayer);
+
+        foreach (Node target in GameManager.instance.allNodes)
+        {
+            if (target.isOccupied)
+                continue;
+
+            bool valid = false;
+
+            if (flying)
+            {
+                valid = true;
+            }
+            else if (node.neighbours.Contains(target))
+            {
+                valid = true;
+            }
+
+            if (valid)
+            {
+                Debug.Log("Highlight spawned on node: " + target.nodeID);
+                Vector3 pos = target.transform.position;
+
+                GameObject highlight =
+                    Instantiate(
+                        moveHighlightPrefab,
+                        pos,
+                        Quaternion.identity
+                    );
+
+                activeHighlights.Add(highlight);
+            }
+        }
+    }
+
+    public void ClearValidMoves()
+    {
+        foreach (GameObject obj in activeHighlights)
+        {
+            Destroy(obj);
+        }
+
+        activeHighlights.Clear();
     }
 }

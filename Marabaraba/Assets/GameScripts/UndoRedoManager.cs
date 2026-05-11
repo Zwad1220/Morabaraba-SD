@@ -41,6 +41,7 @@ public class UndoRedoManager : MonoBehaviour
 
         //Restores previous state
         RestoreGameState(previousState);
+        FindObjectOfType<Movement>().ClearValidMoves();
 
         //Clear undo so it can only happen once
         previousState = null;
@@ -62,6 +63,7 @@ public class UndoRedoManager : MonoBehaviour
 
         //Restores redo state
         RestoreGameState(redoState);
+        FindObjectOfType<Movement>().ClearValidMoves();
 
         //Clears redo after use
         redoState = null;
@@ -101,6 +103,13 @@ public class UndoRedoManager : MonoBehaviour
 
         state.p2PiecesToPlace =
             GameManager.instance.p2PiecesToPlace;
+
+        // Save capture state
+        state.isCapturing =
+            GameManager.instance.IsCapturing();
+        // Save capture state
+        state.isCapturing =
+            GameManager.instance.isCapturing;
 
         return state;
 
@@ -149,7 +158,26 @@ public class UndoRedoManager : MonoBehaviour
         GameManager.instance.p2PiecesToPlace =
             state.p2PiecesToPlace;
 
+        // Restore capture mode
+        GameManager.instance.isCapturing =
+            state.isCapturing;
+
         GameManager.instance.UpdateTurnUI();
         GameManager.instance.UpdatePieceUI();
+
+        // Restore capture UI
+        if (state.isCapturing)
+        {
+            GameManager.instance.instructionText.text =
+                "Player " +
+                GameManager.instance.currentPlayer +
+                ": Capture a piece!";
+
+            GameManager.instance.SetCaptureHighlights(true);
+        }
+        else
+        {
+            GameManager.instance.SetCaptureHighlights(false);
+        }
     }
 }
