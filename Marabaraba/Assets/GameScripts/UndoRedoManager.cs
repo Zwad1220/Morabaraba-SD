@@ -102,6 +102,13 @@ public class UndoRedoManager : MonoBehaviour
         state.p2PiecesToPlace =
             GameManager.instance.p2PiecesToPlace;
 
+        // Save capture state
+        state.isCapturing =
+            GameManager.instance.IsCapturing();
+        // Save capture state
+        state.isCapturing =
+            GameManager.instance.isCapturing;
+
         return state;
 
     }
@@ -149,7 +156,26 @@ public class UndoRedoManager : MonoBehaviour
         GameManager.instance.p2PiecesToPlace =
             state.p2PiecesToPlace;
 
+        // Restore capture mode
+        GameManager.instance.isCapturing =
+            state.isCapturing;
+
         GameManager.instance.UpdateTurnUI();
         GameManager.instance.UpdatePieceUI();
+
+        // Restore capture UI
+        if (state.isCapturing)
+        {
+            GameManager.instance.instructionText.text =
+                "Player " +
+                GameManager.instance.currentPlayer +
+                ": Capture a piece!";
+
+            GameManager.instance.SetCaptureHighlights(true);
+        }
+        else
+        {
+            GameManager.instance.SetCaptureHighlights(false);
+        }
     }
 }
