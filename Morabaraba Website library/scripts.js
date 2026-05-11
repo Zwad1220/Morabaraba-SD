@@ -1,4 +1,4 @@
-const games = [
+const games = [// Game data array
   {
     title: "Morabaraba",
     description: "The traditional African strategy game of 'Cows'. Outsmart your opponent and capture their herd.",
@@ -47,7 +47,7 @@ const startBtn = document.querySelector(".start-btn");
 
 let destination = "";
 
-function renderGames() {
+function renderGames() {// Render game cards dynamically
   games.forEach(game => {
     const card = document.createElement("div");
     card.classList.add("game-card");

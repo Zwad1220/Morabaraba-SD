@@ -187,7 +187,7 @@ body::before {
   font-weight: bold;
   cursor: pointer;
 }
-
+/* custom scrollbar styles for modal body */
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }

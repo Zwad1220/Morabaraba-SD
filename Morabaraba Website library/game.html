@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Unity Web Player | Morabaraba</title>
+    <title>Morabaraba</title>
     <link rel="shortcut icon" href="TemplateData/favicon.ico">
     <link rel="stylesheet" href="TemplateData/style.css">
       <link rel="stylesheet" href="styles.css">
@@ -64,7 +64,7 @@ However, if either player is reduced to three cows, if no captures have been mad
   </div>
 </div>
     <script>
-      var canvas = document.querySelector("#unity-canvas");
+      var canvas = document.querySelector("#unity-canvas");// Select the canvas element for Unity rendering
 
       // Shows a temporary message banner/ribbon for a few seconds, or
       // a permanent error message on top of the canvas if type=='error'.
@@ -72,7 +72,7 @@ However, if either player is reduced to three cows, if no captures have been mad
       // Modify or remove this function to customize the visually presented
       // way that non-critical warnings and error messages are presented to the
       // user.
-      function unityShowBanner(msg, type) {
+      function unityShowBanner(msg, type) {// Function to display banners for warnings and errors
         var warningBanner = document.querySelector("#unity-warning");
         function updateBannerVisibility() {
           warningBanner.style.display = warningBanner.children.length ? 'block' : 'none';
@@ -90,7 +90,7 @@ However, if either player is reduced to three cows, if no captures have been mad
         }
         updateBannerVisibility();
       }
-
+// Configuration for Unity WebGL build
       var buildUrl = "Build";
       var loaderUrl = buildUrl + "/2515ca5021cf919a28469fc96111e995.loader.js";
       var config = {
@@ -126,7 +126,7 @@ However, if either player is reduced to three cows, if no captures have been mad
 
         var meta = document.createElement('meta');
         meta.name = 'viewport';
-        meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
+        meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';// Set the viewport meta tag for mobile devices to ensure proper scaling and prevent user zooming
         document.getElementsByTagName('head')[0].appendChild(meta);
         document.querySelector("#unity-container").className = "unity-mobile";
         canvas.className = "unity-mobile";
@@ -144,11 +144,11 @@ However, if either player is reduced to three cows, if no captures have been mad
 
       document.querySelector("#unity-loading-bar").style.display = "block";
 
-      var script = document.createElement("script");
+      var script = document.createElement("script");// Set the source of the script to the loader URL and define the onload behavior
       script.src = loaderUrl;
       script.onload = () => {
         createUnityInstance(canvas, config, (progress) => {
-          document.querySelector("#unity-progress-bar-full").style.width = 100 * progress + "%";
+          document.querySelector("#unity-progress-bar-full").style.width = 100 * progress + "%";// Update the progress bar width based on the loading progress
               }).then((unityInstance) => {
                 document.querySelector("#unity-loading-bar").style.display = "none";
                 // document.querySelector("#unity-fullscreen-button").onclick = () => {
