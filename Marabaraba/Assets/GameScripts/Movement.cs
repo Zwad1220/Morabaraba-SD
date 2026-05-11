@@ -25,24 +25,19 @@ public class Movement : MonoBehaviour
     // Handles Selection, Deselection, and Destination picking.
     void OnClick()
     {
-        if (AIManager.instance.isAIActive && GameManager.instance.currentPlayer == AIManager.instance.aiPlayerNumber)
-            return;
-        // Raycast to see what was clicked
-        Vector2 inputPos;
+        
+            if (GameManager.instance.gameOver) return;
 
-        // mobile touch
-        if (Touchscreen.current != null && Touchscreen.current.primaryTouch.press.isPressed)
-        {
-            inputPos = Touchscreen.current.primaryTouch.position.ReadValue();
-        }
-        // desktop mouse
-        else
-        {
-            inputPos = Mouse.current.position.ReadValue();
-        }
+            // 1. Get the position directly from the action context if possible, 
+            // but the simplest reliable way for both mouse and touch:
+            Vector2 inputPos = Pointer.current.position.ReadValue();
 
-        Vector2 worldPos = mainCamera.ScreenToWorldPoint(inputPos);
-        RaycastHit2D hit = Physics2D.Raycast(worldPos, Vector2.zero);
+            // 2. Convert to world space
+            Vector2 worldPos = mainCamera.ScreenToWorldPoint(inputPos);
+
+            // 3. Raycast
+            RaycastHit2D hit = Physics2D.Raycast(worldPos, Vector2.zero);
+        
 
         if (hit.collider != null)
         {
