@@ -1,0 +1,62 @@
+body { 
+  padding: 0; 
+  margin: 0; 
+  overflow: hidden; 
+  background: #000; /* Creates the black letterbox bars */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+}
+
+#unity-container { 
+  position: relative;
+  /* This math forces the container to ALWAYS be a perfect 16:9 box */
+  width: 100vw;
+  height: 100vh;
+  max-width: 177.78vh; /* 100vh * (16/9) */
+  max-height: 56.25vw; /* 100vw * (9/16) */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#unity-canvas { 
+  background: #231F20; 
+  /* The !important tags are CRITICAL. They stop Unity's JS from overriding your sizing */
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Hide Unity's default mobile footer logic since we handle it dynamically now */
+#unity-footer { display: none; }
+#unity-loading-bar { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); display: none }
+#unity-logo { width: 154px; height: 130px; background: url('unity-logo-dark.png') no-repeat center }
+#unity-progress-bar-empty { width: 141px; height: 18px; margin-top: 10px; margin-left: 6.5px; background: url('progress-bar-empty-dark.png') no-repeat center }
+#unity-progress-bar-full { width: 0%; height: 18px; margin-top: 10px; background: url('progress-bar-full-dark.png') no-repeat center }
+#unity-warning { position: absolute; left: 50%; top: 5%; transform: translate(-50%); background: white; padding: 10px; display: none }
+
+/* Floating Rules Button in-game */
+#in-game-rules-btn {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  z-index: 100;
+  padding: 12px 24px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  text-transform: uppercase;
+  backdrop-filter: blur(5px);
+  transition: all 0.3s ease;
+}
+
+#in-game-rules-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+}

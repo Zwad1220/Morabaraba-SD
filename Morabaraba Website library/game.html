@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Unity Web Player | Morabaraba</title>
+    <link rel="shortcut icon" href="TemplateData/favicon.ico">
+    <link rel="stylesheet" href="TemplateData/style.css">
+      <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <div id="unity-container" class="unity-desktop">
+      <canvas id="unity-canvas" width=auto height=auto tabindex="-1"></canvas>
+      <div id="unity-loading-bar">
+        <div id="unity-logo"></div>
+        <div id="unity-progress-bar-empty">
+          <div id="unity-progress-bar-full"></div>
+        </div>
+      </div>
+      <!-- <div id="unity-warning"> </div>
+      <div id="unity-footer">
+        <div id="unity-logo-title-footer"></div>
+        <div id="unity-fullscreen-button"></div>
+        <div id="unity-build-title">Morabaraba</div>
+      </div> -->
+    </div>
+    <button id="in-game-rules-btn">Rules</button>
+
+<div class="modal hidden" id="rules-modal">
+  <div class="modal-content">
+    <button class="close-btn" id="close-rules-btn">&times;</button>
+    
+    <div class="modal-header">
+      <h2>Morabaraba Rules</h2>
+    </div>
+    
+    <div class="modal-body" style="white-space: pre-line;">
+How to play: 
+
+1. THE PLACEMENT PHASE
+Each player starts with 12 pieces making 24 pieces in total (traditionally called "cows"). In this phase, each player will take turns placing one cow onto any empty node of their choice onto the board (click an empty circle). The goal during this phase is to position your cows to form "mills" while blocking your opponent from doing the same.
+
+2. FORMING A MILL
+A Mill is formed by placing three of your cows in a straight line; whether horizontally, vertically, or diagonally. Forming a mill is the primary objective and can be done during any phase to gain an advantage over your opponent. Doing so allows you to weaken your opponent's forces as seen in the following rule.
+
+3. SHOOTING A COW
+When you form a mill, you will be permitted to "shoot" (remove) one of your opponent's cows from the board by clicking on it. Cows that may be removed will be highlighted pink.
+Note: You cannot shoot a cow that is currently part of a mill unless all of your opponent's cows are already in mills.
+
+4. THE MOVEMENT PHASE
+Once all 12 cows have been placed on the board, the game shifts to movement. Players take turns moving one cow to an adjacent empty spot along the lines of the board. You continue to try and form mills to remove your opponent's pieces.
+Clicking a piece once will highlight it green, indicating it is selected. Click on an adjacent empty spot to move the cow there.
+Breaking the Mill: During the movement phase, you may move a cow out of an existing mill or into a new one.
+
+5. THE FLYING PHASE
+When a player is reduced to only three cows, they automatically enter the "Flying Phase". At this point the player is no longer restricted to adjacent spots; they can "fly" their cows to any empty node on the board. Thus giving the losing player a "last stand" to force a draw or a comeback.
+
+6. WINNING THE GAME
+The win conditions are as follows:
+-Reduction: Your opponent is reduced to only two cows (making it impossible for them to form a mill).
+-Gridlock: Your opponent is unable to make any legal moves (all their pieces are blocked) the last player to successfully place or move a piece wins.
+However, if either player is reduced to three cows, if no captures have been made within ten moves, or if both players are unable to form mills, the game is declared a draw.
+    </div>
+  </div>
+</div>
+    <script>
+      var canvas = document.querySelector("#unity-canvas");
+
+      // Shows a temporary message banner/ribbon for a few seconds, or
+      // a permanent error message on top of the canvas if type=='error'.
+      // If type=='warning', a yellow highlight color is used.
+      // Modify or remove this function to customize the visually presented
+      // way that non-critical warnings and error messages are presented to the
+      // user.
+      function unityShowBanner(msg, type) {
+        var warningBanner = document.querySelector("#unity-warning");
+        function updateBannerVisibility() {
+          warningBanner.style.display = warningBanner.children.length ? 'block' : 'none';
+        }
+        var div = document.createElement('div');
+        div.innerHTML = msg;
+        warningBanner.appendChild(div);
+        if (type == 'error') div.style = 'background: red; padding: 10px;';
+        else {
+          if (type == 'warning') div.style = 'background: yellow; padding: 10px;';
+          setTimeout(function() {
+            warningBanner.removeChild(div);
+            updateBannerVisibility();
+          }, 5000);
+        }
+        updateBannerVisibility();
+      }
+
+      var buildUrl = "Build";
+      var loaderUrl = buildUrl + "/2515ca5021cf919a28469fc96111e995.loader.js";
+      var config = {
+        arguments: [],
+        dataUrl: buildUrl + "/2042eafa65a5648d3a1bedf9f2f63f81.data.br",
+        frameworkUrl: buildUrl + "/8b5cc19fb05624be8c3ecc4e14167d05.framework.js.br",
+        codeUrl: buildUrl + "/7f430800de26b7a5d58dbdde7fef3d93.wasm.br",
+        streamingAssetsUrl: "StreamingAssets",
+        companyName: "DefaultCompany",
+        productName: "Morabaraba",
+        productVersion: "1.0",
+        showBanner: unityShowBanner,
+      };
+
+      // By default, Unity keeps WebGL canvas render target size matched with
+      // the DOM size of the canvas element (scaled by window.devicePixelRatio)
+      // Set this to false if you want to decouple this synchronization from
+      // happening inside the engine, and you would instead like to size up
+      // the canvas DOM size and WebGL render target sizes yourself.
+      // config.matchWebGLToCanvasSize = false;
+
+      // If you would like all file writes inside Unity Application.persistentDataPath
+      // directory to automatically persist so that the contents are remembered when
+      // the user revisits the site the next time, uncomment the following line:
+      // config.autoSyncPersistentDataPath = true;
+      // This autosyncing is currently not the default behavior to avoid regressing
+      // existing user projects that might rely on the earlier manual
+      // JS_FileSystem_Sync() behavior, but in future Unity version, this will be
+      // expected to change.
+
+      if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+        // Mobile device style: fill the whole browser client area with the game canvas:
+
+        var meta = document.createElement('meta');
+        meta.name = 'viewport';
+        meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
+        document.getElementsByTagName('head')[0].appendChild(meta);
+        document.querySelector("#unity-container").className = "unity-mobile";
+        canvas.className = "unity-mobile";
+
+        // To lower canvas resolution on mobile devices to gain some
+        // performance, uncomment the following line:
+        // config.devicePixelRatio = 1;
+
+
+      } else {
+        // Desktop style: Render the game canvas in a window that can be maximized to fullscreen:
+        canvas.style.width = "960px";
+        canvas.style.height = "600px";
+      }
+
+      document.querySelector("#unity-loading-bar").style.display = "block";
+
+      var script = document.createElement("script");
+      script.src = loaderUrl;
+      script.onload = () => {
+        createUnityInstance(canvas, config, (progress) => {
+          document.querySelector("#unity-progress-bar-full").style.width = 100 * progress + "%";
+              }).then((unityInstance) => {
+                document.querySelector("#unity-loading-bar").style.display = "none";
+                // document.querySelector("#unity-fullscreen-button").onclick = () => {
+                //   unityInstance.SetFullscreen(1);
+                // };
+
+              }).catch((message) => {
+                alert(message);
+              });
+            };
+
+      document.body.appendChild(script);
+
+    </script>
+    <script>
+  // Select the elements
+  const rulesBtn = document.getElementById("in-game-rules-btn");
+  const rulesModal = document.getElementById("rules-modal");
+  const closeRulesBtn = document.getElementById("close-rules-btn");
+
+  // Open modal when Rules button is clicked
+  rulesBtn.addEventListener("click", () => {
+    rulesModal.classList.remove("hidden");
+  });
+
+  // Close modal when X is clicked
+  closeRulesBtn.addEventListener("click", () => {
+    rulesModal.classList.add("hidden");
+  });
+
+  // Close modal when clicking outside the modal box
+  rulesModal.addEventListener("click", (e) => {
+    if (e.target === rulesModal) {
+      rulesModal.classList.add("hidden");
+    }
+  });
+</script>
+  </body>
+</html>
