@@ -518,6 +518,7 @@ public class GameManager : MonoBehaviour
             ps.placementPhase.enabled = true;
             ps.movementPhase.enabled = false;
         }
+        FindObjectOfType<Movement>().ClearValidMoves();
     }
 
     public void EndDraw()

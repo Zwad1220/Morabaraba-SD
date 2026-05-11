@@ -4921,7 +4921,7 @@ MonoBehaviour:
   m_Intensity: 1
   m_LightVolumeIntensity: 1
   m_LightVolumeEnabled: 0
-  m_ApplyToSortingLayers: 00000000
+  m_ApplyToSortingLayers: 00000000cb7fe281
   m_LightCookieSprite: {fileID: 0}
   m_DeprecatedPointLightCookieSprite: {fileID: 0}
   m_LightOrder: 0
@@ -10347,6 +10347,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mainCamera: {fileID: 519420031}
   gm: {fileID: 1642402944}
+  moveHighlightPrefab: {fileID: 876532455435690644, guid: 2bc499d1ad9ef2249918f0860354035d, type: 3}
 --- !u!114 &1642402941
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10446,6 +10447,7 @@ MonoBehaviour:
   p1GlowColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   p2GlowColor: {r: 0, g: 1, b: 1, a: 1}
   currentPlayer: 1
+  isCapturing: 0
   piecesPlaced: 0
   gameOver: 0
   p1FlyingPhase: 0

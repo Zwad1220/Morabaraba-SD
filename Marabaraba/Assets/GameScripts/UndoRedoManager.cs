@@ -41,6 +41,7 @@ public class UndoRedoManager : MonoBehaviour
 
         //Restores previous state
         RestoreGameState(previousState);
+        FindObjectOfType<Movement>().ClearValidMoves();
 
         //Clear undo so it can only happen once
         previousState = null;
@@ -62,6 +63,7 @@ public class UndoRedoManager : MonoBehaviour
 
         //Restores redo state
         RestoreGameState(redoState);
+        FindObjectOfType<Movement>().ClearValidMoves();
 
         //Clears redo after use
         redoState = null;

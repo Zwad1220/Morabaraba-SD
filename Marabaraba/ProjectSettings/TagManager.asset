@@ -15,7 +15,7 @@ TagManager:
   - 
   - 
   - 
-  - 
+  - Highlights
   - background
   - 
   - 
@@ -43,6 +43,9 @@ TagManager:
     locked: 0
   - name: ref
     uniqueID: 3027385167
+    locked: 0
+  - name: Highlights
+    uniqueID: 2179104715
     locked: 0
   m_RenderingLayers:
   - Default
