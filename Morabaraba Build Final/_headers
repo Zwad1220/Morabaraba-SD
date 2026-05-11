@@ -1,0 +1,14 @@
+# Serve Brotli compressed WebAssembly files
+/*.wasm.br
+  Content-Type: application/wasm
+  Content-Encoding: br
+
+# Serve Brotli compressed JavaScript files
+/*.js.br
+  Content-Type: application/javascript
+  Content-Encoding: br
+
+# Serve Brotli compressed Data files
+/*.data.br
+  Content-Type: application/octet-stream
+  Content-Encoding: br
