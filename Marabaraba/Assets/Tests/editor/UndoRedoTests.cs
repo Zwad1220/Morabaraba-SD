@@ -11,12 +11,12 @@ public class UndoRedoTests
     [SetUp]
     public void Setup()
     {
-        // Arrange
+        // Arrange: Initialize GameManager and UndoRedoManager instances
         gameObj = new GameObject();
         gm = gameObj.AddComponent<GameManager>();
         undo = gameObj.AddComponent<UndoRedoManager>();
 
-        // CRITICAL: Set instances
+        //  Set instances
         GameManager.instance = gm;
         UndoRedoManager.instance = undo;
 

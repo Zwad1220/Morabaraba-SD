@@ -477,13 +477,13 @@ public class GameManager : MonoBehaviour
 
     public void ResetGame()
     {
-        // 1. Clear every node on the board
+        // Clear every node on the board
         foreach (Node node in allNodes)
         {
             node.ClearNode();
         }
 
-        // 2. Reset all piece counters to project specifications
+        // Reset all piece counters to project specifications
         p1PiecesToPlace = 12;
         p2PiecesToPlace = 12;
         p1PiecesLeft = 0;
@@ -492,14 +492,14 @@ public class GameManager : MonoBehaviour
 
         movesWithoutCapture = 0;
         UndoRedoManager.instance.ClearHistory();
-        // 3. Reset game state flags
+        //  Reset game state flags
         currentPlayer = 1;
         gameOver = false;
         p1FlyingPhase = false;
         p2FlyingPhase = false;
         isCapturing = false;
 
-        // 4. Update the UI to reflect a fresh start
+        // Update the UI to reflect a fresh start
         if (winScreen != null)
             winScreen.SetActive(false);
 
@@ -511,7 +511,7 @@ public class GameManager : MonoBehaviour
         UpdatePieceUI();
         UpdatePhaseUI("Placement Phase");
 
-        // 5. Ensure the input scripts return to Placement Phase
+        // Ensure the input scripts return to Placement Phase
         PhaseState ps = FindObjectOfType<PhaseState>();
         if (ps != null)
         {

@@ -153,19 +153,19 @@ public class GameManagerTests
         Assert.IsFalse(gm.gameOver, "Game over state was not cleared.");
     }
 
-    [Test]
+    [Test]// Tests the transition from placement to movement phase after all pieces are placed
     public void PlacementPhase_When24PiecesPlaced_SwitchesToMovementPhase()
     {
-        // Arrange
+        // Arrange: Set up the game state to be one piece away from completing placement
         gm.piecesPlaced = 23;
         gm.currentPlayer = 1;
 
         PhaseState ps = Object.FindObjectOfType<PhaseState>();
 
-        // Act
+        // Act: Place the last piece to trigger the phase transition
         gm.OnPiecePlaced(gm.allNodes[0]);
 
-        // Assert
+        // Assert: Verify that the pieces placed count is correct and phases are updated accordingly
         Assert.AreEqual(24, gm.piecesPlaced);
 
         Assert.IsFalse(ps.placementPhase.enabled,
@@ -175,24 +175,24 @@ public class GameManagerTests
             "Movement phase should be enabled.");
     }
 
-    [Test]
+    [Test]// Tests the flying phase condition when a player has only three pieces left
     public void PlayerWithThreePieces_EntersFlyingPhase()
     {
-        // Arrange
+        // Arrange: Set up the game state to reflect a player having only three pieces left
         gm.piecesPlaced = 24;
         gm.p1PiecesLeft = 3;
 
-        // Act
+        // Act: Check if the flying phase is active for the player with three pieces
         bool result = gm.IsFlying(1);
 
-        // Assert
+        // Assert: Verify that the flying phase is active for the player with three pieces
         Assert.IsTrue(result);
     }
 
-    [Test]
+    [Test]// Tests that the game reset functionality properly restores the initial game state after a game over scenario
     public void ResetGame_AfterGameOver_RestoresInitialState()
     {
-        // Arrange
+        // Arrange: Set up a game over scenario with modified game state
         gm.gameOver = true;
 
         gm.currentPlayer = 2;
@@ -202,10 +202,10 @@ public class GameManagerTests
         gm.allNodes[0].owner = 1;
         gm.allNodes[0].isOccupied = true;
 
-        // Act
+        // Act: Call the reset function to restore the game state
         gm.ResetGame();
 
-        // Assert
+        // Assert: Verify that the game state has been restored to its initial conditions
         Assert.IsFalse(gm.gameOver);
 
         Assert.AreEqual(1, gm.currentPlayer);

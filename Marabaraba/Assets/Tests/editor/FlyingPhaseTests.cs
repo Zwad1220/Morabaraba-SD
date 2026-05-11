@@ -90,7 +90,7 @@ public class FlyingPhaseTests
         Assert.IsFalse(flying.CanMove(start, target), "Cannot move to a node that is already occupied.");
     }
 
-    [Test]
+    [Test]// SPECIAL CASE: Flying allows movement to any empty node, not just neighbors
     public void CanMove_WhenFlyingIsActive_AllowsMovementToNonNeighbors()
     {
         // Arrange
@@ -108,10 +108,10 @@ public class FlyingPhaseTests
         Assert.IsTrue(result, "Flying should allow movement to any empty node regardless of proximity.");
     }
 
-    [Test]
+    [Test]// SPECIAL CASE: Player with no valid moves (all neighbors occupied) cannot move
     public void PlayerWithNoValidMoves_CannotMoveAnywhere()
     {
-        // Arrange
+        // Arrange: Set up a scenario where the player has no valid moves (all neighbors occupied)
         gm.piecesPlaced = 24;
 
         gm.currentPlayer = 1;
@@ -133,11 +133,11 @@ public class FlyingPhaseTests
         playerNode.neighbours.Add(blocked1);
         playerNode.neighbours.Add(blocked2);
 
-        // Act
+        // Act: Attempt to move to either occupied neighbor
         bool move1 = flying.CanMove(playerNode, blocked1);
         bool move2 = flying.CanMove(playerNode, blocked2);
 
-        // Assert
+        // Assert: Both moves should be invalid
         Assert.IsFalse(move1);
         Assert.IsFalse(move2);
     }

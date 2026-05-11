@@ -24,14 +24,13 @@ public class Placement : MonoBehaviour
     {
             if (GameManager.instance.gameOver) return;
 
-            // 1. Get the position directly from the action context if possible, 
-            // but the simplest reliable way for both mouse and touch:
+            // Get the position directly from the action context
             Vector2 inputPos = Pointer.current.position.ReadValue();
 
-            // 2. Convert to world space
+            //  Convert to world space
             Vector2 worldPos = mainCamera.ScreenToWorldPoint(inputPos);
 
-            // 3. Raycast
+            // Raycast
             RaycastHit2D hit = Physics2D.Raycast(worldPos, Vector2.zero);
 
         

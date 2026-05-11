@@ -35,14 +35,13 @@ public class Movement : MonoBehaviour
         
             if (GameManager.instance.gameOver) return;
 
-            // 1. Get the position directly from the action context if possible, 
-            // but the simplest reliable way for both mouse and touch:
+            //  Get the position directly from the action context
             Vector2 inputPos = Pointer.current.position.ReadValue();
 
-            // 2. Convert to world space
+            // Convert to world space
             Vector2 worldPos = mainCamera.ScreenToWorldPoint(inputPos);
 
-            // 3. Raycast
+            //Raycast
             RaycastHit2D hit = Physics2D.Raycast(worldPos, Vector2.zero);
         
 
@@ -174,7 +173,7 @@ public class Movement : MonoBehaviour
         GameManager.instance.CheckMillAndSwitchTurn(targetNode);// Check if the move formed a mill and switch turns
     }
 
-    void ShowValidMoves(Node node)
+    void ShowValidMoves(Node node)// Highlights valid move locations based on whether the player is flying or not.
     {
         Debug.Log("ShowValidMoves CALLED");
         ClearValidMoves();
@@ -190,11 +189,11 @@ public class Movement : MonoBehaviour
 
             bool valid = false;
 
-            if (flying)
+            if (flying)// If flying, any unoccupied node is a valid move
             {
                 valid = true;
             }
-            else if (node.neighbours.Contains(target))
+            else if (node.neighbours.Contains(target))// If not flying, only neighboring unoccupied nodes are valid
             {
                 valid = true;
             }
@@ -202,27 +201,27 @@ public class Movement : MonoBehaviour
             if (valid)
             {
                 Debug.Log("Highlight spawned on node: " + target.nodeID);
-                Vector3 pos = target.transform.position;
+                Vector3 pos = target.transform.position;// Get the position of the target node to place the highlight
 
-                GameObject highlight =
+                GameObject highlight = 
                     Instantiate(
                         moveHighlightPrefab,
                         pos,
                         Quaternion.identity
                     );
 
-                activeHighlights.Add(highlight);
+                activeHighlights.Add(highlight);// Keep track of active highlights to clear them later
             }
         }
     }
 
-    public void ClearValidMoves()
+    public void ClearValidMoves()// Destroys all active move highlight objects and clears the list.
     {
         foreach (GameObject obj in activeHighlights)
         {
             Destroy(obj);
         }
 
-        activeHighlights.Clear();
+        activeHighlights.Clear();// Clear the list after destroying the objects
     }
 }

@@ -78,9 +78,9 @@ public class UndoRedoManager : MonoBehaviour
     {
         GameState state = new GameState();
 
-        state.nodeOwners = new int[GameManager.instance.allNodes.Length];
+        state.nodeOwners = new int[GameManager.instance.allNodes.Length];// Initialize array to store node ownership
 
-        for (int i = 0; i < GameManager.instance.allNodes.Length; i++)
+        for (int i = 0; i < GameManager.instance.allNodes.Length; i++)// Save owner of each node
         {
             state.nodeOwners[i] =
                 GameManager.instance.allNodes[i].owner;
@@ -127,7 +127,7 @@ public class UndoRedoManager : MonoBehaviour
 
             node.ClearNode();
 
-            int owner = state.nodeOwners[i];
+            int owner = state.nodeOwners[i];// Get owner from saved state
 
             if (owner != 0)
             {
@@ -173,11 +173,11 @@ public class UndoRedoManager : MonoBehaviour
                 GameManager.instance.currentPlayer +
                 ": Capture a piece!";
 
-            GameManager.instance.SetCaptureHighlights(true);
+            GameManager.instance.SetCaptureHighlights(true);// Highlight capturable pieces
         }
         else
         {
-            GameManager.instance.SetCaptureHighlights(false);
+            GameManager.instance.SetCaptureHighlights(false);// Clear highlights if not in capture mode
         }
     }
 }

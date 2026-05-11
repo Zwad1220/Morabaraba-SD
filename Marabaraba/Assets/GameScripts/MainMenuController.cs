@@ -42,15 +42,15 @@ public class MainMenuController : MonoBehaviour
 
     public void OnExitToMenuClicked()
     {
-        // 1. Re-activate the Main Menu UI
+        // Re-activate the Main Menu UI
         MainMenuScreen.SetActive(true);
 
-        // 2. Disable game input
+        // Disable game input
         placement.enabled = false;
         Movement movementScript = FindObjectOfType<Movement>();
         if (movementScript != null) movementScript.enabled = false;
 
-        // 3. Match the name in GameManager.cs (ResetGame)
+        // Match the name in GameManager.cs (ResetGame)
         GameManager.instance.ResetGame();
     }
 

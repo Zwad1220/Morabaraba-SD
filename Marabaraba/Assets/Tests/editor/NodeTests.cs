@@ -8,7 +8,7 @@ public class NodeTests
     private GameObject nodeObj;
 
     [SetUp]
-    public void Setup()
+    public void Setup()// create a GameObject and add a SpriteRenderer because Node.ClearNode() accesses the Renderer component
     {
         nodeObj = new GameObject();
 

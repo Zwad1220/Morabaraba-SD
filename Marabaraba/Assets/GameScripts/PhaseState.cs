@@ -26,12 +26,12 @@ public class PhaseState : MonoBehaviour
         //gm.instructionText.text = "Move a piece to any adjacent empty slot.";
         if (gm.currentPlayer == 1 && !gm.p1FlyingPhase)
         {
-            gm.instructionText.text = "Move a piece to any adjacent empty slot.";
+            gm.instructionText.text = "Move a piece to any adjacent empty slot.";//update instruction text for movement phase
             GameManager.instance.UpdatePhaseUI("Movement Phase");
         }
         if (gm.currentPlayer == 2 && !gm.p2FlyingPhase)
         {
-            gm.instructionText.text = "Move a piece to any adjacent empty slot.";
+            gm.instructionText.text = "Move a piece to any adjacent empty slot.";//update instruction text for movement phase
             GameManager.instance.UpdatePhaseUI("Movement Phase");
         }
     }

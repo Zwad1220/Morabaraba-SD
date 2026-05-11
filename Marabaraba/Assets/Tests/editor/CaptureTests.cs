@@ -11,7 +11,7 @@ public class CaptureTests
     [SetUp]
     public void Setup()
     {
-        // 1. Initialize the core GameObjects and Script Instances
+        // Initialize the core GameObjects and Script Instances
         gameObj = new GameObject("TestController");
         gm = gameObj.AddComponent<GameManager>();
 
@@ -24,7 +24,7 @@ public class CaptureTests
         UndoRedoManager.instance = undo;
         AIManager.instance = ai;
 
-        // 2. Mock ALL UI Text References to prevent NullReferenceExceptions
+        //  Mock ALL UI Text References to prevent NullReferenceExceptions
         // Each of these is referenced in GameManager's UI update methods
         gm.instructionText = new GameObject("InstructionText").AddComponent<TMPro.TextMeshProUGUI>();
         gm.phaseText = new GameObject("PhaseText").AddComponent<TMPro.TextMeshProUGUI>();
@@ -37,7 +37,7 @@ public class CaptureTests
         gm.winScreen.SetActive(false);
         gm.winText = gm.winScreen.AddComponent<TMPro.TextMeshProUGUI>();
 
-        // 3. Mock the PhaseState dependency
+        // Mock the PhaseState dependency
         // GameManager calls FindObjectOfType<PhaseState>(), so we must add it to the scene
         var phaseState = gameObj.AddComponent<PhaseState>();
         phaseState.gm = gm;
@@ -46,7 +46,7 @@ public class CaptureTests
         phaseState.placementPhase = gameObj.AddComponent<Placement>();
         phaseState.movementPhase = gameObj.AddComponent<Movement>();
 
-        // 4. Initialize the Board (Nodes)
+        // Initialize the Board (Nodes)
         gm.allNodes = new Node[24];
         for (int i = 0; i < 24; i++)
         {
@@ -60,7 +60,7 @@ public class CaptureTests
             gm.allNodes[i] = node;
         }
 
-        // 5. Set Initial Game State for testing
+        // Set Initial Game State for testing
         gm.p1PiecesToPlace = 12;
         gm.p2PiecesToPlace = 12;
         gm.currentPlayer = 1;
@@ -73,16 +73,16 @@ public class CaptureTests
     [Test]
     public void TryCapture_OpponentPieceOutsideMill_DecrementsOpponentCount()
     {
-        // Arrange
+        // Arrange: Set up the game state for a valid capture scenario
         gm.currentPlayer = 1;
         gm.p2PiecesLeft = 5;
         Node target = gm.allNodes[0];
         target.owner = 2; // Piece belongs to P2
 
-        // Act
+        // Act: Attempt to capture the opponent's piece 
         gm.TryCapture(target);
 
-        // Assert
+        // Assert: Verify that P2's piece count decreases and the node is cleared
         Assert.AreEqual(4, gm.p2PiecesLeft, "P2 piece count should decrease after valid capture.");
         Assert.AreEqual(0, target.owner, "Node should be empty after capture.");
     }
@@ -91,16 +91,16 @@ public class CaptureTests
     [Test]
     public void TryCapture_OwnPiece_DoesNotRemovePiece()
     {
-        // Arrange
+        // Arrange: Set up the game state where the current player tries to capture their own piece
         gm.currentPlayer = 1;
         gm.p1PiecesLeft = 5;
         Node target = gm.allNodes[0];
         target.owner = 1; // Own piece
 
-        // Act
+        // Act: Attempt to capture own piece
         gm.TryCapture(target);
 
-        // Assert
+        // Assert: Verify that own piece count does not change and the node remains owned by the player
         Assert.AreEqual(5, gm.p1PiecesLeft, "Own piece count should not change.");
         Assert.AreEqual(1, target.owner, "Node owner should remain unchanged.");
     }
@@ -109,7 +109,7 @@ public class CaptureTests
     [Test]
     public void TryCapture_PieceInMillWhileOthersExist_FailsToCapture()
     {
-        // Arrange
+        // Arrange: Set up a scenario where the opponent has a piece in a mill but also has pieces outside the mill
         gm.currentPlayer = 1;
         gm.p2PiecesLeft = 4;
 
@@ -124,7 +124,7 @@ public class CaptureTests
         // Act: Try to capture the one in the mill
         gm.TryCapture(gm.allNodes[0]);
 
-        // Assert
+        // Assert: Verify that the capture fails because there is a piece outside the mill, and the piece in the mill remains
         Assert.AreEqual(4, gm.p2PiecesLeft, "Capture should be blocked because a piece exists outside the mill.");
         Assert.AreEqual(2, gm.allNodes[0].owner, "Mill piece should still exist.");
     }
@@ -133,7 +133,7 @@ public class CaptureTests
     [Test]
     public void TryCapture_LastPossiblePiece_SetsGameOver()
     {
-        // Arrange
+        // Arrange: Set up the game state where capturing one more piece would leave the opponent with only 2 pieces, triggering a win condition
         gm.piecesPlaced = 24; // Movement phase
         gm.currentPlayer = 1;
         gm.p2PiecesLeft = 3;
@@ -141,10 +141,10 @@ public class CaptureTests
         gm.winScreen = new GameObject(); // Mock UI
         gm.winText = gm.winScreen.AddComponent<TMPro.TextMeshProUGUI>();
 
-        // Act
+        // Act: Attempt to capture the last piece that would leave the opponent with only 2 pieces
         gm.TryCapture(gm.allNodes[0]);
 
-        // Assert
+        // Assert: Verify that the opponent's piece count decreases and the game is marked as over
         Assert.IsTrue(gm.gameOver, "Game should be over when opponent has only 2 pieces left.");
     }
 }
