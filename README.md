@@ -131,13 +131,16 @@ The system is designed to run directly in modern web browsers without requiring 
 ### Known Limitations  
 - WebGL performance may vary depending on hardware or browser
 - Multiplayer Networking is not implemented
+- Game logic does not work on mobile
 
 ### Future Improvements  
 Potential future improvements include:
-- Online multiplayer support
+- Online multiplayer support and live chat
 - Improved AI using algorithms
-- Mobile responsiveness
 - Additional board themes
+- Additional traditional games
+- Cultural history of games
+- Authentification
 
 ### System Requirements
 | Requirement | Minimum |
