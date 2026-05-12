@@ -75,3 +75,82 @@ Contains:
 3. Open the project using the recommended Unity version
 4. Open the main scene
 5. Press play in the Unity Editor
+
+## Running the Website Version  
+1. Open the deployed Netlify Link (https://morabaraba-platform-prototype-group-4.netlify.app/)  
+   OR
+2. Open the *Morabaraba Website Library*
+3. Launch using a local web server or Live Server Extension
+4. Open in supported web browser
+
+### Controls 
+| Action | Input |
+| ----------- | ----------- |
+| Place piece | Left click |
+| Select piece | Left click |
+| Move piece | Left click |
+| Capture piece | Left click |
+| Undo move | Undo button |
+| Redo move | Redo button |
+| Restart game (after completed game) | Restart button |
+| Restart/Quit game (during game) | Refresh/Close page |  
+### AI Difficulty Levels  
+| Difficulty | Behaviour |
+| ----------- | ----------- |
+| Easy | Random legal moves |
+| Medium | Attemps mills and blocks opponent |
+| Hard | Prioritises strategic movement and placements |
+
+### Testing  
+Testing was performed using:
+- Unity Test Framework
+- Manual gameplay testing
+- Integration testing
+- AI behaviour testing
+- Browser compatibility testing
+- Rule validation testing
+ 
+**Test coverage included**
+- Placement validation
+- Movement validation
+- Flying phase
+- Mill detection
+- Capture rules
+- Undo/redo functionality
+- Draw conditions
+- AI behaviour
+- WebGL compatibility  
+### Deployment  
+The project was deployed using:
+- Unity WebGL build target
+- Netlify hosting platform
+- Browser-based deployment pipeline
+
+The system is designed to run directly in modern web browsers without requiring additional downloads or installations.  
+
+### Known Limitations  
+- WebGL performance may vary depending on hardware or browser
+- Multiplayer Networking is not implemented
+
+### Future Improvements  
+Potential future improvements include:
+- Online multiplayer support
+- Improved AI using algorithms
+- Mobile responsiveness
+- Additional board themes
+
+### System Requirements
+| Requirement | Minimum |
+| ----------- | ----------- |
+| Modern Web Browser | Chrome, Firefox, Edge (recommendations) |
+| RAM | 4GB |
+| Internet connection for web version | Stable broadband connection |
+| Screen resolution | 1280x720 recommended |  
+
+Compatible with:
+- Windows
+- macOS
+- Linux
+
+## Acknowledgements  
+This project was inspired by the traditional African board game ***Morabaraba*** and developed for academic purposes as part of a software development project.
